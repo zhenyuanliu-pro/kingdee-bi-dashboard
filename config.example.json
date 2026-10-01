@@ -1,0 +1,19 @@
+{
+  "client_id": "<金蝶开放平台应用 ID>",
+  "client_secret": "<应用 Secret：只放在本地 config.json，不要提交到仓库>",
+  "start_date": "2024-01-01",
+  "accounts": [
+    { "name": "主体A", "outer_instance_id": "<账套实例 ID>" },
+    { "name": "主体B", "outer_instance_id": "<账套实例 ID>" }
+  ],
+  "exclusion_rules": {
+    "name_exact": ["<集团内部公司全称 1>", "<集团内部公司全称 2>"],
+    "name_contains": ["未认领", "报损", "零售客户"],
+    "customer_group": ["财务专用", "领用"]
+  },
+  "regions": {
+    "keywords": ["北区", "东区", "南区", "西区"],
+    "map": [["电商", "电商"], ["商务中心", "商务中心"]],
+    "order": ["北区", "东区", "南区", "西区", "电商", "商务中心"]
+  }
+}
