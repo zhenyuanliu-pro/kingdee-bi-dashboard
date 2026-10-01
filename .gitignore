@@ -1,0 +1,8 @@
+# 密钥与真实数据不进仓库
+config.json
+*.json.gz
+design_data*.json
+snapshot*
+data/
+__pycache__/
+.DS_Store
