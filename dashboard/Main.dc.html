@@ -1,0 +1,920 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>经营驾驶舱</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,300..900&family=Noto+Sans+SC:wght@400;500;700;900&display=swap">
+<style>
+body{margin:0;background:#edf1ef;color:#12211e;font-family:"Archivo","Noto Sans SC",system-ui,-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;font-size:14px;line-height:1.6;-webkit-font-smoothing:antialiased}
+a{color:#00907c}a:hover{color:#006d5e}
+*{box-sizing:border-box}
+button{font:inherit;cursor:pointer}
+button:focus-visible,input:focus-visible,a:focus-visible{outline:2px solid #5fd0b6;outline-offset:2px}
+.nums{font-variant-numeric:tabular-nums}
+
+/* 页首 */
+.band{background:#12211e;color:#e4ece8;padding:0 56px}
+.bar{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px;padding:28px 0 0}
+.bar h1{font-weight:800;font-stretch:88%;font-size:20px;margin:0;letter-spacing:.01em}
+.bar p{margin:0;color:#93a6a0;font-size:13px}
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:end;padding:40px 0 32px}
+.lede{font-size:20px;font-weight:500;color:#c9d6d1;margin:0}
+.big{display:flex;align-items:baseline;gap:12px;margin:4px 0 2px}
+.big .fig{font-size:148px;line-height:.92;font-weight:800;font-stretch:68%;letter-spacing:-.01em;color:#fff;font-variant-numeric:tabular-nums}
+.big .u{font-size:26px;font-weight:700;color:#c9d6d1}
+.cmp{font-size:17px;margin:12px 0 0;color:#c9d6d1}
+.cmp b{font-weight:700}
+.cmp.bad b{color:#ff9a73}.cmp.good b{color:#5fd0b6}
+.spark svg{display:block;width:100%;height:auto;overflow:visible}
+.spark .l25{fill:none;stroke:#6b7f79;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
+.spark .l26{fill:none;stroke:#5fd0b6;stroke-width:3.5;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:1600;animation:drawS 1.6s cubic-bezier(.3,.6,.2,1) both}
+.spark .a26{fill:#5fd0b6;fill-opacity:.08;animation:fadeIn 1.2s .6s both}
+.spark .end{fill:#5fd0b6;stroke:#12211e;stroke-width:3;transform-box:fill-box;transform-origin:center;animation:pop .4s 1.4s both}
+.keys{display:flex;flex-wrap:wrap;gap:18px;font-size:12px;color:#93a6a0;margin-top:10px}
+.key{display:inline-flex;align-items:center;gap:6px}
+.key i{display:inline-block;width:16px;height:3px;border-radius:2px}
+.kpis{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));border-top:1px solid rgba(228,236,232,.14)}
+.kpi{padding:20px 22px 26px 0;display:flex;flex-direction:column;gap:6px;min-width:0}
+.kpi+.kpi{padding-left:22px;border-left:1px solid rgba(228,236,232,.14)}
+.kpi .l{font-size:13px;color:#93a6a0}
+.kvr{display:flex;align-items:center;justify-content:space-between;gap:8px;min-height:56px}
+.kpi .v{font-size:36px;line-height:1;font-weight:700;font-stretch:78%;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap}
+.kpi .v small{font-size:13px;font-weight:500;font-stretch:100%;color:#93a6a0;margin-left:3px}
+.kpi .d{font-size:12px;color:#93a6a0}
+.ring{width:52px;height:52px;flex:none;transform:rotate(-90deg)}
+.ring .rt{fill:none;stroke:rgba(228,236,232,.14);stroke-width:6}
+.ring .rv{fill:none;stroke-width:6;stroke-linecap:round;transition:stroke-dasharray .6s}
+.rg-jade{stroke:#5fd0b6}.rg-coral{stroke:#ff9a73}
+.msp{width:96px;height:30px;flex:none;overflow:visible}
+.msp polyline{fill:none;stroke:#5fd0b6;stroke-width:2;stroke-linejoin:round;stroke-dasharray:400;animation:drawS 1.4s .3s ease-out both}
+.mb{display:flex;flex-direction:column;gap:4px}
+.mb div{display:grid;grid-template-columns:minmax(0,1fr) 40px;align-items:center;gap:6px;font-size:11px;color:#93a6a0}
+.mb i{display:block;height:6px;border-radius:0 3px 3px 0;background:#5fd0b6;transform-origin:left;animation:growX .9s .2s cubic-bezier(.2,.7,.2,1) both;transition:width .6s}
+.mb i.b2{background:#6b7f79}
+.gauge{position:relative;height:8px;border-radius:4px;background:linear-gradient(90deg,#2f8f5b 0 38%,#c98c00 38% 70%,#e5663a 70%);opacity:.9;margin-top:4px}
+.gauge b{position:absolute;top:-4px;width:4px;height:16px;border-radius:2px;background:#fff;transform:translateX(-50%);transition:left .6s;box-shadow:0 0 0 2px #12211e}
+.warnbar{margin:14px 0 0;padding:10px 14px;border-radius:10px;background:rgba(255,154,115,.14);color:#ffc2a8;font-size:13px}
+.gscale{display:flex;justify-content:space-between;font-size:10px;color:#6b7f79}
+
+/* 置顶导航 */
+.nav{position:sticky;top:0;z-index:5;background:rgba(18,33,30,.97);padding:0 56px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px 24px;box-shadow:0 12px 24px -22px rgba(18,33,30,.9)}
+.links{display:flex;gap:2px;overflow-x:auto}
+.links a{color:#b8c7c2;text-decoration:none;padding:15px 14px 13px;font-size:15px;font-weight:500;border-bottom:2px solid transparent;white-space:nowrap;transition:color .2s,border-color .2s}
+.links a:hover{color:#fff;border-bottom-color:#5fd0b6}
+.seg{display:flex;flex-wrap:wrap;gap:2px;padding:3px;border-radius:10px;background:rgba(228,236,232,.08)}
+.seg button{border:0;background:transparent;color:#b8c7c2;padding:6px 12px;border-radius:8px;min-height:36px;font-size:13px;transition:background .25s,color .25s}
+.seg button:hover{color:#fff}
+.seg button.on{background:#e4ece8;color:#12211e;font-weight:600}
+.loading{padding:56px 0 64px;color:#93a6a0;font-size:15px}
+.loading i{display:block;width:240px;height:2px;margin-top:14px;background:linear-gradient(90deg,#5fd0b6 0 30%,rgba(228,236,232,.12) 30%);background-size:200% 100%;animation:slide 1.2s linear infinite}
+
+/* 模块 */
+.main{padding:8px 56px 80px;max-width:1560px;margin:0 auto}
+.sec{padding:56px 0 8px;display:flex;flex-direction:column;gap:24px;scroll-margin-top:64px}
+.sh{display:grid;grid-template-columns:minmax(0,auto) minmax(0,1fr);align-items:baseline;gap:6px 28px;border-bottom:2px solid #12211e;padding-bottom:14px}
+.sh h2{font-size:34px;font-weight:900;font-stretch:80%;margin:0;letter-spacing:.01em;white-space:nowrap}
+.sh p{margin:0;font-size:16px;color:#45544f;max-width:70ch}
+.row{display:grid;gap:24px}
+.r84{grid-template-columns:minmax(0,2fr) minmax(0,1fr)}
+.r66{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.r75{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr)}
+.panel{background:#f9fbfa;border:1px solid #d8e0dc;border-radius:16px;padding:22px 24px 18px;min-width:0;display:flex;flex-direction:column;gap:14px}
+.panel.flat{background:transparent;border:0;padding:0}
+.ph{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px}
+.ph h3{font-size:17px;font-weight:700;margin:0}
+.ph p{margin:0;font-size:12px;color:#75837f}
+.lk{display:flex;flex-wrap:wrap;gap:14px;font-size:12px;color:#45544f}
+.lk .key i{width:12px;height:12px;border-radius:3px}
+.lk .key i.line{height:3px;width:16px}
+.note{font-size:12px;color:#75837f;margin:0}
+.up{color:#1b7a52}.down{color:#c2462a}
+
+/* 热力条 */
+.heat{display:grid;grid-template-columns:52px repeat(12,minmax(0,1fr)) 84px;gap:4px;align-items:center}
+.heat .yl{font-size:13px;font-weight:600}
+.heat .ml{font-size:11px;color:#75837f;text-align:center}
+.heat .c{height:46px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;animation:cellIn .5s ease-out both;transition:transform .15s}
+.heat .c:hover{transform:scale(1.06)}
+.heat .tt{font-size:12px;text-align:right;color:#45544f;font-weight:600}
+
+/* 折线 */
+.plot{position:relative;aspect-ratio:1000/280;width:100%}
+.plot svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.plot.b{aspect-ratio:1000/210}
+.gl{position:absolute;left:5.6%;right:1.6%;height:0;border-top:1px solid #e3e9e6}
+.plot.b .gl{left:4.8%;right:1.4%}
+.gl span{position:absolute;right:calc(100% + 8px);transform:translateY(-55%);font-size:11px;color:#75837f;white-space:nowrap}
+.ln24{fill:none;stroke:#bcc6c2;stroke-width:2;stroke-linejoin:round}
+.ln25{fill:none;stroke:#e5663a;stroke-width:2;stroke-linejoin:round;stroke-dasharray:3000;animation:draw 1.4s .1s ease-out both}
+.ln26{fill:none;stroke:#00907c;stroke-width:3;stroke-linejoin:round;stroke-linecap:round;stroke-dasharray:3000;animation:draw 1.6s .2s ease-out both}
+.area{fill:#00907c;fill-opacity:.09;stroke:none;animation:fadeIn 1s .4s both}
+.lnb{fill:none;stroke:#00907c;stroke-width:2.5;stroke-linejoin:round;stroke-dasharray:3000;animation:draw 1.6s ease-out both}
+.dot{fill:#00907c;stroke:#f9fbfa;stroke-width:3}
+.endl{position:absolute;transform:translate(-50%,-150%);font-size:12px;font-weight:700;color:#006d5e;white-space:nowrap;background:#f9fbfa;padding:0 4px;border-radius:4px}
+.hcol{position:absolute;top:0;bottom:0}
+.hcol i{position:absolute;left:50%;top:6%;bottom:6%;border-left:1px dashed #a9b6b2;opacity:0;transition:opacity .15s}
+.hcol.on i{opacity:1}
+.tip{position:absolute;top:4%;min-width:150px;background:#12211e;color:#e4ece8;border-radius:10px;padding:10px 12px;font-size:12px;pointer-events:none;box-shadow:0 12px 30px -12px rgba(18,33,30,.6);animation:tipIn .18s ease-out both}
+.tip b{display:block;font-size:13px;margin-bottom:4px;color:#fff}
+.tip div{display:flex;justify-content:space-between;gap:14px}
+.tip .key i{width:10px;height:3px}
+.k26 i{background:#5fd0b6}.k25 i{background:#ff9a73}.k24 i{background:#93a6a0}
+.xax{position:relative;height:20px;font-size:11px;color:#75837f}
+.xax span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+
+/* 柱 */
+.cols{display:flex;align-items:flex-end;gap:10px;height:240px;padding-top:24px}
+.col{flex:1 1 0;display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;min-width:0}
+.stack{flex:1;width:100%;max-width:64px;display:flex;flex-direction:column-reverse;gap:2px;transform-origin:bottom;animation:growY .8s cubic-bezier(.2,.7,.2,1) both}
+.stack div{border-radius:2px;transition:height .6s cubic-bezier(.2,.7,.2,1),opacity .3s}
+.stack div:last-child{border-radius:5px 5px 2px 2px}
+.col .tt{font-size:12px;font-weight:700}
+.col .xl{font-size:12px;color:#75837f;white-space:nowrap}
+.pair{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:3px;transform-origin:bottom;animation:growY .7s cubic-bezier(.2,.7,.2,1) both}
+.pair div{width:40%;max-width:18px;border-radius:5px 5px 0 0;transition:height .6s cubic-bezier(.2,.7,.2,1)}
+.pair .s{background:#00907c}.pair .c{background:#3b6fd9}
+.yax{display:flex;flex-direction:column;justify-content:space-between;height:216px;margin-top:24px;font-size:11px;color:#75837f;text-align:right;padding-right:4px}
+.chartrow{display:grid;grid-template-columns:40px minmax(0,1fr);gap:6px}
+
+/* 100% 条 */
+.hbar{display:flex;gap:3px;height:56px;border-radius:10px;overflow:hidden}
+.hbar div{display:flex;align-items:center;padding:0 12px;color:#fff;font-size:13px;font-weight:700;min-width:6px;transform-origin:left;animation:growX .9s cubic-bezier(.2,.7,.2,1) both;transition:flex-grow .6s;white-space:nowrap;overflow:hidden}
+.hbar div.lt{color:#12211e}
+.legrows{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 24px}
+.lr{display:grid;grid-template-columns:12px minmax(0,1fr) auto auto;align-items:center;gap:8px;font-size:13px;padding:6px 0;border-bottom:1px solid #e3e9e6}
+.lr i{width:12px;height:12px;border-radius:3px}
+.lr b{font-weight:700;font-variant-numeric:tabular-nums}
+
+/* 方块图 */
+.tree{display:flex;gap:4px;height:360px}
+.trr{flex-basis:0;min-width:64px;display:flex;flex-direction:column;gap:4px;animation:rise .6s cubic-bezier(.2,.7,.2,1) both;transition:flex-grow .6s}
+.trh{padding:2px 2px 4px;display:flex;flex-direction:column;line-height:1.3;min-width:0}
+.trh b{font-size:15px;font-weight:800}
+.trh span{font-size:12px;color:#45544f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trt{flex:1;display:flex;flex-direction:column;gap:3px;min-height:0}
+.trt div{flex-basis:0;min-height:4px;border-radius:6px;color:#fff;padding:8px 10px;font-size:12px;font-weight:600;overflow:hidden;transition:filter .2s}
+.trt div:hover{filter:brightness(1.12)}
+
+/* 排名条 */
+.rank{display:flex;flex-direction:column}
+.rk{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,2fr) 150px;align-items:center;gap:16px;padding:9px 0;border-bottom:1px solid #e3e9e6}
+.rk.sp{grid-template-columns:minmax(0,1.3fr) minmax(0,1.6fr) 110px 150px}
+.rk .nm{display:flex;flex-direction:column;min-width:0;line-height:1.35}
+.rk .nm b{font-size:14px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rk .nm span{font-size:12px;color:#75837f;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.trk{position:relative;display:flex;flex-direction:column;gap:3px}
+.b26{height:14px;border-radius:0 5px 5px 0;background:#00907c;transform-origin:left;animation:growX .8s cubic-bezier(.2,.7,.2,1) both;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.b25{height:4px;border-radius:0 3px 3px 0;background:#bcc6c2;transition:width .6s}
+.bod{height:16px;border-radius:0 5px 5px 0;background:#e5663a;transform-origin:left;animation:growX .8s cubic-bezier(.2,.7,.2,1) both;position:relative;z-index:1}
+.bbal{position:absolute;left:0;top:0;height:16px;border-radius:0 5px 5px 0;background:#f5d5c7}
+.rk .vv{display:flex;flex-direction:column;align-items:flex-end;line-height:1.35}
+.rk .vv b{font-size:15px;font-weight:700;font-variant-numeric:tabular-nums}
+.rk .vv span{font-size:12px}
+.rsp{width:110px;height:30px;overflow:visible}
+.rsp polyline{fill:none;stroke:#3b6fd9;stroke-width:1.8;stroke-linejoin:round}
+.bul{position:relative;height:18px;border-radius:4px;background:repeating-linear-gradient(90deg,#e3e9e6 0 1px,transparent 1px 25%)}
+.bul .bs{position:absolute;left:0;top:3px;height:12px;border-radius:0 4px 4px 0;transform-origin:left;animation:growX .9s cubic-bezier(.2,.7,.2,1) both}
+.bul .bs.crit{background:#c9372c}.bul .bs.ser{background:#e07b39}.bul .bs.warn{background:#c98c00}
+.bul .mk{position:absolute;top:-3px;width:3px;height:24px;border-radius:2px;background:#12211e;transform:translateX(-50%)}
+.bulscale{display:flex;justify-content:space-between;font-size:11px;color:#75837f;padding:0 0 4px}
+.hb{display:grid;grid-template-columns:96px minmax(0,1fr) 70px;align-items:center;gap:12px;border:0;background:none;padding:5px 0;text-align:left;border-radius:8px;transition:opacity .3s;width:100%}
+.hb.dim{opacity:.35}
+.hb .n{font-size:13px;color:#45544f;text-align:right}
+.bo{height:14px;border-radius:0 5px 5px 0;background:#e5663a;transform-origin:left;animation:growX .8s cubic-bezier(.2,.7,.2,1) both;transition:width .6s}
+.hb .v{font-size:13px;font-weight:700;text-align:right}
+.cvr{position:relative;height:14px;background:#eef2f0;border-radius:0 5px 5px 0}
+.cvr i{display:block;height:14px;border-radius:0 5px 5px 0;transform-origin:left;animation:growX .8s cubic-bezier(.2,.7,.2,1) both}
+.cvr .t2,.cvr .t24{position:absolute;top:-3px;bottom:-3px;border-left:1px dashed #75837f}
+.cvr .t2{left:5.55%}.cvr .t24{left:66.6%}
+
+/* 矩阵 */
+.mx{display:grid;grid-template-columns:96px repeat(5,minmax(0,1fr)) 80px;gap:3px;font-size:13px}
+.mx .h{font-size:12px;color:#75837f;text-align:right;padding:4px 8px}
+.mx .rh{color:#45544f;padding:10px 8px 10px 0}
+.mx .c{text-align:right;padding:10px 10px;border-radius:6px;animation:cellIn .5s ease-out both;font-variant-numeric:tabular-nums;font-weight:600}
+.mx .t{text-align:right;padding:10px 8px;font-weight:700}
+.mx .ft{border-top:1px solid #d8e0dc;padding-top:10px;font-weight:700;text-align:right}
+
+/* 统计块 */
+.stat{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));background:#f9fbfa;border:1px solid #d8e0dc;border-radius:16px;overflow:hidden}
+.stat.s5{grid-template-columns:repeat(5,minmax(0,1fr))}
+.st{padding:18px 20px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.st+.st{border-left:1px solid #e3e9e6}
+.st .l{font-size:13px;color:#45544f}
+.st .kv{font-size:32px;line-height:1.2;font-weight:700;font-stretch:78%;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st .kv small{font-size:13px;font-weight:500;font-stretch:100%;color:#75837f;margin-left:3px}
+.st.alert .kv{color:#c2462a}
+.st .d{font-size:12px;color:#75837f}
+
+/* 筛选与表格 */
+.fbar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips button{border:1px solid #d8e0dc;background:#f9fbfa;color:#45544f;padding:6px 12px;border-radius:999px;font-size:13px;min-height:36px;transition:all .2s}
+.chips button:hover{border-color:#00907c;color:#12211e}
+.chips button.on{background:#12211e;border-color:#12211e;color:#fff}
+.search{border:1px solid #d8e0dc;background:#fff;border-radius:10px;padding:8px 12px;font:inherit;font-size:13px;min-width:220px;min-height:38px;color:#12211e}
+.lbl{display:flex;align-items:center;gap:8px;font-size:13px;color:#45544f}
+.tog{align-self:flex-start;display:inline-flex;align-items:center;gap:8px;border:1px solid #12211e;background:#f9fbfa;color:#12211e;border-radius:999px;padding:8px 16px;font-size:13px;font-weight:600;min-height:40px;transition:background .2s,color .2s}
+.tog:hover{background:#12211e;color:#fff}
+.tog i{display:inline-block;width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);transition:transform .25s}
+.tog.on i{transform:rotate(-135deg) translateY(-2px)}
+.drawer{display:flex;flex-direction:column;gap:12px;animation:drawer .35s cubic-bezier(.2,.7,.2,1) both}
+.grid-t{overflow-x:auto;border-top:1px solid #d8e0dc}
+.tr{display:grid;align-items:center;column-gap:14px;padding:0 6px;border-bottom:1px solid #e3e9e6;min-height:44px;transition:background .15s}
+.tr:hover{background:#e6eeea}
+.tr.hd{background:#edf1ef;min-height:40px}
+.th{border:0;background:none;padding:10px 0;font-size:12px;color:#75837f;text-align:left;width:100%;white-space:nowrap}
+.th.num{text-align:right}
+.th.on{color:#12211e;font-weight:700}
+.td{font-size:13px;padding:10px 0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.td.num{text-align:right;font-variant-numeric:tabular-nums}
+.td.name{white-space:normal;line-height:1.4}
+.td.strong{font-weight:600}
+.more{align-self:flex-start;border:0;background:none;color:#006d5e;font-size:13px;padding:8px 0;min-height:40px;text-decoration:underline;text-underline-offset:3px}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:2px 9px 2px 7px;border-radius:999px;background:#eef2f0;color:#45544f;white-space:nowrap}
+.chip::before{content:"";width:7px;height:7px;border-radius:50%;background:#93a6a0}
+.chip.crit{background:#fbe7e3;color:#8f2a1f}.chip.crit::before{background:#c9372c}
+.chip.ser{background:#fcebdf;color:#8a3f12}.chip.ser::before{background:#e07b39}
+.chip.warn{background:#f8efd6;color:#6e4d00}.chip.warn::before{background:#c98c00}
+.chip.ok{background:#e1f1e8;color:#1b5e3c}.chip.ok::before{background:#2f8f5b}
+.defs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px}
+.dl{display:grid;grid-template-columns:88px minmax(0,1fr);gap:10px 16px;font-size:13px}
+.dl .k{color:#75837f}
+.mini{display:grid;column-gap:14px;font-size:13px}
+.mini div{padding:7px 0;border-bottom:1px solid #e3e9e6}
+.mini .r{text-align:right;font-variant-numeric:tabular-nums}
+.ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:13px;color:#45544f;max-width:70ch}
+.foot{padding:56px 0 0;display:flex;flex-direction:column;gap:18px}
+
+@keyframes draw{from{stroke-dashoffset:3000}to{stroke-dashoffset:0}}
+@keyframes drawS{from{stroke-dashoffset:1600}to{stroke-dashoffset:0}}
+.msp polyline{animation-name:drawM}
+@keyframes drawM{from{stroke-dashoffset:400}to{stroke-dashoffset:0}}
+@keyframes pop{from{transform:scale(0);opacity:0}}
+@keyframes growY{from{transform:scaleY(0)}}
+@keyframes growX{from{transform:scaleX(0)}}
+@keyframes fadeIn{from{opacity:0}}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}}
+@keyframes tipIn{from{opacity:0;transform:translateY(4px)}}
+@keyframes cellIn{from{opacity:0;transform:scale(.9)}}
+@keyframes drawer{from{opacity:0;transform:translateY(-6px)}}
+@keyframes slide{to{background-position:-200% 0}}
+@media (prefers-reduced-motion: reduce){*,*::before{animation:none!important;transition:none!important}}
+@media (max-width:1100px){.hero,.r84,.r66,.r75,.defs{grid-template-columns:minmax(0,1fr)}.kpis,.stat{grid-template-columns:repeat(3,minmax(0,1fr))}.kpi:nth-child(4){border-left:0;padding-left:0}.big .fig{font-size:110px}.sh{grid-template-columns:minmax(0,1fr)}.tree{height:300px}}
+@media (max-width:640px){.band,.main,.nav{padding-left:16px;padding-right:16px}.kpis,.stat,.stat.s5{grid-template-columns:repeat(2,minmax(0,1fr))}.kpi:nth-child(odd){border-left:0;padding-left:0}.kpi:nth-child(even){padding-left:14px}.big .fig{font-size:84px}.heat{grid-template-columns:40px repeat(12,minmax(0,1fr))}.heat .tt,.heat .c span{display:none}.heat .c{height:30px;font-size:0}.rk,.rk.sp{grid-template-columns:minmax(0,1fr) 110px}.rk .trk,.rk svg{grid-column:1 / -1;grid-row:2}.tree{flex-wrap:wrap;height:auto}.trr{min-width:44%;height:180px}.legrows{grid-template-columns:minmax(0,1fr)}.mx{grid-template-columns:64px repeat(5,minmax(0,1fr));font-size:11px}.mx .t{display:none}.gl span{display:none}.gl{left:0}.sh h2{font-size:28px}}
+</style>
+</helmet>
+<div class="app" style="min-height: 100vh; width: 100%">
+<header class="band">
+<div class="bar"><h1>经营驾驶舱</h1><p>数据截至 {{asOf}}，已剔除集团内部往来和非业务客户，金额为含税价</p></div>
+<sc-if value="{{hasExp}}" hint-placeholder-val="{{ false }}"><p class="warnbar">{{expWarn}}</p></sc-if>
+<sc-if value="{{loading}}" hint-placeholder-val="{{ false }}"><div class="loading">正在读取金蝶数据快照<i></i></div></sc-if>
+<sc-if value="{{hasErr}}" hint-placeholder-val="{{ false }}"><div class="loading">{{err}}。刷新页面可以重新加载。</div></sc-if>
+<sc-if value="{{ready}}" hint-placeholder-val="{{ true }}">
+<div class="hero">
+<div>
+<p class="lede">{{lbx.ytd}}，{{ledLabel}}净销售</p>
+<div class="big"><span class="fig">{{hero.a}}</span><span class="u">{{hero.u}}</span></div>
+<p class="cmp {{hero.cmpCls}}"><b>{{hero.cmp}}</b>，去年同期 {{hero.prev}}</p>
+</div>
+<figure class="spark" style="margin: 0">
+<svg viewBox="0 0 560 170" role="img" aria-label="2026 年与 2025 年月度净销售对比">
+<polyline class="l25" points="{{hero.spark25}}"></polyline>
+<polyline class="l26" points="{{hero.spark26}}"></polyline>
+<circle class="end" cx="{{hero.sx}}" cy="{{hero.sy}}" r="7"></circle>
+</svg>
+<figcaption class="keys"><span class="key"><i style="background: #5fd0b6"></i>{{lbx.y2}} 年每月净销售</span><span class="key"><i style="background: #6b7f79"></i>{{lbx.y1}} 年</span><span>{{hero.endT}}</span></figcaption>
+</figure>
+</div>
+<div class="kpis">
+<sc-for list="{{hero.kpis}}" as="k" hint-placeholder-count="6">
+<div class="kpi">
+<span class="l">{{k.l}}</span>
+<div class="kvr">
+<span class="v">{{k.v}}<small>{{k.u}}</small></span>
+<sc-if value="{{k.isRing}}" hint-placeholder-val="{{ false }}"><svg class="ring" viewBox="0 0 56 56" aria-hidden="true"><circle class="rt" cx="28" cy="28" r="22"></circle><circle class="rv {{k.rcls}}" cx="28" cy="28" r="22" style="{{k.ring}}"></circle></svg></sc-if>
+<sc-if value="{{k.isSpark}}" hint-placeholder-val="{{ false }}"><svg class="msp" viewBox="0 0 120 34" aria-hidden="true"><polyline points="{{k.sp}}"></polyline></svg></sc-if>
+</div>
+<sc-if value="{{k.isBars}}" hint-placeholder-val="{{ false }}"><div class="mb"><div><i style="{{k.b1}}"></i><span>{{k.b1l}}</span></div><div><i class="b2" style="{{k.b2}}"></i><span>{{k.b2l}}</span></div></div></sc-if>
+<sc-if value="{{k.isGauge}}" hint-placeholder-val="{{ false }}"><div class="gauge"><b style="{{k.g}}"></b></div><div class="gscale"><span>0</span><span>45</span><span>84</span><span>120 天</span></div></sc-if>
+<span class="d">{{k.d}}</span>
+</div>
+</sc-for>
+</div>
+</sc-if>
+</header>
+<nav class="nav" aria-label="页面导航">
+<div class="links"><a href="#sec-ov">经营总览</a><a href="#sec-ar">应收与账龄</a><a href="#sec-cu">客户经营</a><a href="#sec-pr">产品与库存</a><a href="#sec-df">口径说明</a></div>
+<div class="seg" aria-label="选择主体"><sc-for list="{{ledgers}}" as="l" hint-placeholder-count="5"><button type="button" class="{{l.on}}" aria-pressed="{{l.pressed}}" onClick="{{l.pick}}">{{l.n}}</button></sc-for></div>
+</nav>
+<main class="main">
+<sc-if value="{{ready}}" hint-placeholder-val="{{ true }}">
+
+<section class="sec" id="sec-ov">
+<div class="sh"><h2>经营总览</h2><p>{{ov.sum}}</p></div>
+<section class="panel">
+<div class="ph"><h3>三年月度净销售热力</h3><p>单位万元，颜色越深当月销售越高，悬停看数值</p></div>
+<div class="heat">
+<span></span><sc-for list="{{ov.cols}}" as="c" hint-placeholder-count="12"><span class="ml">{{c.m}}</span></sc-for><span class="ml" style="text-align: right">全年</span>
+<sc-for list="{{ov.heat}}" as="r" hint-placeholder-count="3">
+<span class="yl">{{r.y}}</span>
+<sc-for list="{{r.cells}}" as="c"><div class="c" style="{{c.st}}" title="{{c.tip}}"><span>{{c.v}}</span></div></sc-for>
+<span class="tt">{{r.tot}}</span>
+</sc-for>
+</div>
+</section>
+<div class="row r84">
+<section class="panel">
+<div class="ph"><h3>月度净销售，三年对比</h3><div class="lk"><span class="key"><i class="line" style="background: #00907c"></i>{{lbx.y2}} 年</span><span class="key"><i class="line" style="background: #e5663a"></i>{{lbx.y1}} 年</span><span class="key"><i class="line" style="background: #bcc6c2"></i>{{lbx.y0}} 年</span></div></div>
+<div class="plot" onMouseLeave="{{clearHover}}">
+<sc-for list="{{ov.ticks}}" as="g" hint-placeholder-count="5"><div class="gl" style="{{g.st}}"><span>{{g.t}}</span></div></sc-for>
+<svg viewBox="0 0 1000 280" aria-hidden="true">
+<polyline class="ln24" points="{{ov.l24}}"></polyline>
+<polyline class="ln25" points="{{ov.l25}}"></polyline>
+<polyline class="ln26" points="{{ov.l26}}"></polyline>
+<circle class="dot" cx="{{ov.endX}}" cy="{{ov.endY}}" r="6"></circle>
+</svg>
+<div class="endl" style="{{ov.endLbl}}">{{ov.endT}}</div>
+<sc-for list="{{ov.cols}}" as="c" hint-placeholder-count="12"><div class="hcol {{c.on}}" style="{{c.st}}" onMouseEnter="{{c.onEnter}}"><i></i></div></sc-for>
+<sc-if value="{{ov.hasTip}}" hint-placeholder-val="{{ false }}"><div class="tip" style="{{ov.tip.st}}"><b>{{ov.tip.m}}</b><sc-for list="{{ov.tip.rows}}" as="r"><div><span class="{{r.k}}"><i></i> {{r.y}}</span><span>{{r.v}}</span></div></sc-for></div></sc-if>
+</div>
+<div class="xax"><sc-for list="{{ov.cols}}" as="c" hint-placeholder-count="12"><span style="{{c.lx}}">{{c.m}}</span></sc-for></div>
+</section>
+<section class="panel">
+<div class="ph"><h3>各主体的年度净销售</h3></div>
+<div class="lk"><sc-for list="{{ov.ledLegend}}" as="g" hint-placeholder-count="4"><span class="key"><i style="{{g.sw}}"></i>{{g.n}}</span></sc-for></div>
+<div class="cols" style="height: 300px">
+<sc-for list="{{ov.ledCols}}" as="c" hint-placeholder-count="3"><div class="col"><span class="tt">{{c.total}}</span><div class="stack" style="{{c.delay}}"><sc-for list="{{c.segs}}" as="s"><div style="{{s.h}}" title="{{s.tip}}"></div></sc-for></div><span class="xl">{{c.y}}</span></div></sc-for>
+</div>
+<p class="note">选中某个主体时，其他主体会变淡。悬停看各主体金额。</p>
+</section>
+</div>
+<div class="row r66">
+<section class="panel">
+<div class="ph"><h3>渠道结构</h3><p>{{lbx.ytd}}</p></div>
+<div class="hbar"><sc-for list="{{ov.chSegs}}" as="c" hint-placeholder-count="3"><div style="{{c.st}}" title="{{c.tip}}"><sc-if value="{{c.big}}">{{c.n}} {{c.sh}}</sc-if></div></sc-for></div>
+<div class="legrows"><sc-for list="{{ov.chRows}}" as="c" hint-placeholder-count="4"><div class="lr"><i style="{{c.sw}}"></i><span>{{c.n}}</span><b>{{c.v}}</b><span class="{{c.dcls}}">{{c.d}}</span></div></sc-for></div>
+<p class="note">金额右侧为同比。出现负数表示当期退货多于出库。</p>
+</section>
+<section class="panel">
+<div class="ph"><h3>{{lbx.cy}} 年每月净销售与回款</h3><div class="lk"><span class="key"><i style="background: #00907c"></i>净销售</span><span class="key"><i style="background: #3b6fd9"></i>回款</span></div></div>
+<div class="chartrow">
+<div class="yax"><sc-for list="{{ov.mTicks}}" as="t" hint-placeholder-count="5"><span>{{t.t}}</span></sc-for></div>
+<div class="cols"><sc-for list="{{ov.m26}}" as="m" hint-placeholder-count="9"><div class="col"><div class="pair" style="{{m.delay}}" title="{{m.tip}}"><div class="s" style="{{m.hs}}"></div><div class="c" style="{{m.hc}}"></div></div><span class="xl">{{m.m}}</span></div></sc-for></div>
+</div>
+<p class="note">单位万元。回款取自金蝶应收账款汇总表的收销售款，含同单收款。</p>
+</section>
+</div>
+<section class="panel">
+<div class="ph"><h3>大区与部门</h3><p>方块面积 = {{lbx.ytd}}净销售，按出库单上的销售部门归属</p></div>
+<div class="tree">
+<sc-for list="{{ov.tree}}" as="r" hint-placeholder-count="8">
+<div class="trr" style="{{r.st}}">
+<div class="trh"><b>{{r.n}}</b><span>{{r.v}}，占 {{r.sh}}</span><span class="{{r.dcls}}">{{r.d}}</span></div>
+<div class="trt"><sc-for list="{{r.teams}}" as="t"><div style="{{t.st}}" title="{{t.tip}}"><sc-if value="{{t.lbl}}">{{t.n}}<br>{{t.v}} 万</sc-if></div></sc-for></div>
+</div>
+</sc-for>
+</div>
+</section>
+<section class="panel flat">
+<div class="ph"><h3>业务员前十</h3><p>粗条为 {{lbx.ytd}}，细线为去年同期</p></div>
+<div class="rank"><sc-for list="{{ov.repBars}}" as="r" hint-placeholder-count="10"><div class="rk"><div class="nm"><b>{{r.n}}</b><span>{{r.tm}}</span></div><div class="trk"><div class="b26" style="{{r.w26}}"></div><div class="b25" style="{{r.w25}}"></div></div><div class="vv"><b>{{r.v}}</b><span class="{{r.dcls}}">{{r.d}}</span></div></div></sc-for></div>
+<button type="button" class="tog" onClick="{{ov.rep.onToggle}}">{{ov.rep.toggleTxt}}<i></i></button>
+<sc-if value="{{ov.rep.open}}" hint-placeholder-val="{{ false }}"><div class="drawer">
+<div class="grid-t"><div style="min-width: 760px">
+<div class="tr hd" style="grid-template-columns: minmax(80px,1fr) minmax(100px,1.2fr) repeat(5,minmax(90px,1fr))"><sc-for list="{{ov.rep.head}}" as="h"><button type="button" class="th {{h.cls}}" onClick="{{h.onSort}}">{{h.t}} {{h.arrow}}</button></sc-for></div>
+<sc-for list="{{ov.rep.rows}}" as="r"><div class="tr" style="grid-template-columns: minmax(80px,1fr) minmax(100px,1.2fr) repeat(5,minmax(90px,1fr))"><sc-for list="{{r.cells}}" as="c"><div class="td {{c.cls}}"><sc-if value="{{c.chip}}"><span class="chip {{c.chipCls}}">{{c.v}}</span></sc-if><sc-if value="{{c.plain}}">{{c.v}}</sc-if></div></sc-for></div></sc-for>
+</div></div>
+<sc-if value="{{ov.rep.hasMore}}"><button type="button" class="more" onClick="{{ov.rep.onMore}}">{{ov.rep.moreTxt}}</button></sc-if>
+</div></sc-if>
+</section>
+</section>
+
+<section class="sec" id="sec-ar">
+<div class="sh"><h2>应收与账龄</h2><p>{{ar.sum}}</p></div>
+<div class="fbar"><div class="chips" aria-label="按部门筛选"><sc-for list="{{ar.regionChips}}" as="c"><button type="button" class="{{c.on}}" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}">{{c.n}}</button></sc-for></div></div>
+<div class="stat"><sc-for list="{{ar.kpis}}" as="k" hint-placeholder-count="6"><div class="st {{k.cls}}"><span class="l">{{k.l}}</span><span class="kv">{{k.a}}<small>{{k.u}}</small></span><span class="d">{{k.d}}</span></div></sc-for></div>
+<section class="panel">
+<div class="ph"><h3>欠款按账龄</h3><p>从出库日起算，颜色越暖账越老</p></div>
+<div class="hbar"><sc-for list="{{ar.ageSegs}}" as="a" hint-placeholder-count="6"><div class="{{a.lt}}" style="{{a.st}}" title="{{a.tip}}"><sc-if value="{{a.big}}">{{a.sh}}</sc-if></div></sc-for></div>
+<div class="lk"><sc-for list="{{ar.ageLegend}}" as="a"><span class="key"><i style="{{a.sw}}"></i>{{a.n}} {{a.v}}</span></sc-for></div>
+</section>
+<div class="row r75">
+<section class="panel">
+<div class="ph"><h3>逾期最多的十家客户</h3><p>橙色为逾期金额，浅色为该客户全部欠款</p></div>
+<sc-if value="{{ar.hasOd}}"><div class="rank"><sc-for list="{{ar.odBars}}" as="r" hint-placeholder-count="10"><div class="rk"><div class="nm"><b title="{{r.n}}">{{r.n}}</b><span>{{r.meta}}</span></div><div class="trk"><div class="bbal" style="{{r.wb}}"></div><div class="bod" style="{{r.w}}"></div></div><div class="vv"><b>{{r.v}}</b><span class="chip {{r.dchip}}">{{r.days}}</span></div></div></sc-for></div></sc-if>
+<sc-if value="{{ar.noOd}}"><p class="note" style="padding: 24px 0">当前范围内没有逾期客户。</p></sc-if>
+</section>
+<section class="panel">
+<div class="ph"><h3>逾期金额按部门</h3></div>
+<div><sc-for list="{{ar.rgBars}}" as="b" hint-placeholder-count="8"><button type="button" class="hb {{b.on}}" aria-pressed="{{b.pressed}}" onClick="{{b.pick}}"><span class="n">{{b.n}}</span><div class="bo" style="{{b.w}}"></div><span class="v">{{b.v}}</span></button></sc-for></div>
+<p class="note">{{ar.rgNote}}</p>
+</section>
+</div>
+<div class="row r66">
+<section class="panel">
+<div class="ph"><h3>账龄与逾期交叉</h3><p>单位万元，绿色为未到期，橙色越深逾期越多</p></div>
+<div class="mx">
+<div class="h" style="text-align: left">账龄</div><sc-for list="{{ar.heads}}" as="h"><div class="h">{{h}}</div></sc-for><div class="h t">合计</div>
+<sc-for list="{{ar.matrix}}" as="r" hint-placeholder-count="6"><div class="rh">{{r.a}}</div><sc-for list="{{r.cells}}" as="c"><div class="c" style="{{c.st}}" title="{{c.tip}}">{{c.v}}</div></sc-for><div class="t">{{r.tot}}</div></sc-for>
+<div class="rh ft" style="text-align: left">合计</div><sc-for list="{{ar.colTot}}" as="c"><div class="ft">{{c.v}}</div></sc-for><div class="ft t">{{ar.total}}</div>
+</div>
+<p class="note">到期日 = 出库日 + 客户结算期限；收款按先进先出冲销最早的出库单。</p>
+</section>
+<section class="panel">
+<div class="ph"><h3>月末应收余额</h3><p>2024 年 1 月至今，单位万元</p></div>
+<div class="plot b">
+<sc-for list="{{ar.bticks}}" as="g"><div class="gl" style="{{g.st}}"><span>{{g.t}}</span></div></sc-for>
+<svg viewBox="0 0 1000 210" aria-hidden="true"><polygon class="area" points="{{ar.barea}}"></polygon><polyline class="lnb" points="{{ar.bl}}"></polyline><circle class="dot" cx="{{ar.bEndX}}" cy="{{ar.bEndY}}" r="6"></circle></svg>
+<div class="endl" style="{{ar.bEndSt}}; transform: none">{{ar.bEndT}}</div>
+</div>
+<div class="xax"><sc-for list="{{ar.bmarks}}" as="m"><span style="{{m.st}}">{{m.t}}</span></sc-for></div>
+<div class="ph" style="margin-top: 10px"><h3>未来 12 周到期</h3><p>单位万元</p></div>
+<div class="cols" style="height: 170px"><sc-for list="{{ar.weeks}}" as="w" hint-placeholder-count="12"><div class="col"><span class="tt" style="font-weight: 600; font-size: 11px">{{w.v}}</span><div class="stack" style="max-width: 26px"><div style="{{w.h}}; background: #00907c" title="{{w.tip}}"></div></div><span class="xl" style="font-size: 11px">{{w.t}}</span></div></sc-for></div>
+</section>
+</div>
+<div class="panel flat">
+<button type="button" class="tog" onClick="{{ar.tbl.onToggle}}">{{ar.tbl.toggleTxt}}<i></i></button>
+<sc-if value="{{ar.tbl.open}}" hint-placeholder-val="{{ false }}"><div class="drawer">
+<div class="fbar"><div class="chips" aria-label="客户筛选"><sc-for list="{{ar.fChips}}" as="c"><button type="button" class="{{c.on}}" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}">{{c.n}}</button></sc-for></div><label class="lbl" for="ar-q">搜索<input id="ar-q" class="search" type="search" placeholder="客户或业务员" value="{{ar.q}}" onChange="{{ar.onQ}}"></label></div>
+<div class="grid-t"><div style="min-width: 1280px">
+<div class="tr hd" style="grid-template-columns: minmax(200px,2.2fr) 96px 56px 64px 72px 72px 96px 100px 100px 84px 104px 120px"><sc-for list="{{ar.tbl.head}}" as="h"><button type="button" class="th {{h.cls}}" onClick="{{h.onSort}}">{{h.t}} {{h.arrow}}</button></sc-for></div>
+<sc-for list="{{ar.tbl.rows}}" as="r"><div class="tr" style="grid-template-columns: minmax(200px,2.2fr) 96px 56px 64px 72px 72px 96px 100px 100px 84px 104px 120px"><sc-for list="{{r.cells}}" as="c"><div class="td {{c.cls}}"><sc-if value="{{c.chip}}"><span class="chip {{c.chipCls}}">{{c.v}}</span></sc-if><sc-if value="{{c.plain}}">{{c.v}}</sc-if></div></sc-for></div></sc-for>
+<sc-if value="{{ar.tbl.empty}}"><p class="note" style="padding: 24px 6px">当前筛选下没有客户。换一个部门或筛选条件试试。</p></sc-if>
+</div></div>
+<sc-if value="{{ar.tbl.hasMore}}"><button type="button" class="more" onClick="{{ar.tbl.onMore}}">{{ar.tbl.moreTxt}}</button></sc-if>
+</div></sc-if>
+</div>
+</section>
+
+<section class="sec" id="sec-cu">
+<div class="sh"><h2>客户经营</h2><p>{{cu.sum}}</p></div>
+<div class="stat s5"><sc-for list="{{cu.kpis}}" as="k" hint-placeholder-count="5"><div class="st"><span class="l">{{k.l}}</span><span class="kv">{{k.a}}<small>{{k.u}}</small></span><span class="d">{{k.d}}</span></div></sc-for></div>
+<div class="fbar"><div class="chips" aria-label="按渠道筛选"><sc-for list="{{cu.chChips}}" as="c"><button type="button" class="{{c.on}}" aria-pressed="{{c.pressed}}" onClick="{{c.pick}}">{{c.n}}</button></sc-for></div></div>
+<section class="panel">
+<div class="ph"><h3>前十大客户</h3><div class="lk"><span class="key"><i style="background: #00907c"></i>{{lbx.ytd}}</span><span class="key"><i style="background: #bcc6c2"></i>去年同期</span><span class="key"><i class="line" style="background: #3b6fd9"></i>今年每月走势</span></div></div>
+<div class="rank"><sc-for list="{{cu.topBars}}" as="r" hint-placeholder-count="10"><div class="rk sp"><div class="nm"><b title="{{r.n}}">{{r.n}}</b><span>{{r.meta}}</span></div><div class="trk"><div class="b26" style="{{r.w26}}"></div><div class="b25" style="{{r.w25}}"></div></div><svg class="rsp" viewBox="0 0 110 30" aria-hidden="true"><polyline points="{{r.sp}}"></polyline></svg><div class="vv"><b>{{r.v}}</b><span class="{{r.dcls}}">{{r.d}}</span></div></div></sc-for></div>
+</section>
+<div class="row r66">
+<section class="panel">
+<div class="ph"><h3>新老客户贡献</h3><div class="lk"><span class="key"><i style="background: #00907c"></i>老客户</span><span class="key"><i style="background: #e5663a"></i>新客户</span></div></div>
+<div class="chartrow">
+<div class="yax"><sc-for list="{{cu.nTicks}}" as="t"><span>{{t.t}}</span></sc-for></div>
+<div class="cols"><sc-for list="{{cu.newold}}" as="m" hint-placeholder-count="9"><div class="col"><div class="stack" style="{{m.delay}}; max-width: 30px" title="{{m.tip}}"><div style="{{m.ho}}; background: #00907c"></div><div style="{{m.hn}}; background: #e5663a"></div></div><span class="xl">{{m.m}}</span></div></sc-for></div>
+</div>
+<p class="note">{{lbx.cy}} 年每月净销售，单位万元。新客户指首次成交在 {{lbx.cy}} 年（数据从 2024 年 1 月起）。</p>
+</section>
+<section class="panel">
+<div class="ph"><h3>客户集中度</h3><p>按净销售从高到低的累计占比</p></div>
+<div class="plot b">
+<sc-for list="{{cu.pTicks}}" as="g"><div class="gl" style="{{g.st}}"><span>{{g.t}}</span></div></sc-for>
+<svg viewBox="0 0 1000 210" aria-hidden="true"><polygon class="area" points="{{cu.pArea}}"></polygon><polyline class="lnb" points="{{cu.pl}}"></polyline></svg>
+<sc-for list="{{cu.pMarks}}" as="m"><div class="endl" style="{{m.st}}">{{m.t}}</div></sc-for>
+</div>
+<p class="note">横轴为客户排名，最多显示前 100 名。</p>
+</section>
+</div>
+<section class="panel">
+<div class="ph"><h3>最该跟进的流失预警客户</h3><div class="lk"><span class="key"><i style="background: #c9372c"></i>未下单天数</span><span class="key"><i class="line" style="background: #12211e; width: 3px; height: 12px"></i>平时的下单间隔</span></div></div>
+<sc-if value="{{cu.hasBullet}}"><div>
+<div class="rk" style="border: 0; padding: 0"><span></span><div class="bulscale"><span>0</span><span>90 天</span><span>180 天</span><span>270 天</span><span>365 天</span></div><span></span></div>
+<div class="rank"><sc-for list="{{cu.bullet}}" as="r" hint-placeholder-count="8"><div class="rk"><div class="nm"><b title="{{r.n}}">{{r.n}}</b><span>{{r.meta}}</span></div><div class="bul"><div class="bs {{r.sev}}" style="{{r.w}}"></div><div class="mk" style="{{r.mk}}"></div></div><div class="vv"><b>{{r.v}}</b><span>{{r.since}}，{{r.gap}}</span></div></div></sc-for></div>
+</div></sc-if>
+<p class="note">按近 12 个月净销售排序。条越长离上次下单越久，黑色刻度是这家客户平时的下单间隔。</p>
+</section>
+<div class="panel flat">
+<div class="fbar"><button type="button" class="tog" onClick="{{cu.tbl.onToggle}}">{{cu.tbl.toggleTxt}}<i></i></button><button type="button" class="tog" onClick="{{cu.churn.onToggle}}">{{cu.churn.toggleTxt}}<i></i></button></div>
+<sc-if value="{{cu.tbl.open}}" hint-placeholder-val="{{ false }}"><div class="drawer">
+<label class="lbl" for="cu-q">搜索<input id="cu-q" class="search" type="search" placeholder="客户名称" value="{{cu.q}}" onChange="{{cu.onQ}}"></label>
+<div class="grid-t"><div style="min-width: 1200px">
+<div class="tr hd" style="grid-template-columns: minmax(220px,2.4fr) 56px 88px 110px 110px 80px 76px 96px 84px 100px 90px"><sc-for list="{{cu.tbl.head}}" as="h"><button type="button" class="th {{h.cls}}" onClick="{{h.onSort}}">{{h.t}} {{h.arrow}}</button></sc-for></div>
+<sc-for list="{{cu.tbl.rows}}" as="r"><div class="tr" style="grid-template-columns: minmax(220px,2.4fr) 56px 88px 110px 110px 80px 76px 96px 84px 100px 90px"><sc-for list="{{r.cells}}" as="c"><div class="td {{c.cls}}"><sc-if value="{{c.chip}}"><span class="chip {{c.chipCls}}">{{c.v}}</span></sc-if><sc-if value="{{c.plain}}">{{c.v}}</sc-if></div></sc-for></div></sc-for>
+</div></div>
+<sc-if value="{{cu.tbl.hasMore}}"><button type="button" class="more" onClick="{{cu.tbl.onMore}}">{{cu.tbl.moreTxt}}</button></sc-if>
+</div></sc-if>
+<sc-if value="{{cu.churn.open}}" hint-placeholder-val="{{ false }}"><div class="drawer">
+<div class="grid-t"><div style="min-width: 1080px">
+<div class="tr hd" style="grid-template-columns: minmax(220px,2.4fr) 56px 88px 96px 72px 84px 80px 130px 100px"><sc-for list="{{cu.churn.head}}" as="h"><button type="button" class="th {{h.cls}}" onClick="{{h.onSort}}">{{h.t}} {{h.arrow}}</button></sc-for></div>
+<sc-for list="{{cu.churn.rows}}" as="r"><div class="tr" style="grid-template-columns: minmax(220px,2.4fr) 56px 88px 96px 72px 84px 80px 130px 100px"><sc-for list="{{r.cells}}" as="c"><div class="td {{c.cls}}"><sc-if value="{{c.chip}}"><span class="chip {{c.chipCls}}">{{c.v}}</span></sc-if><sc-if value="{{c.plain}}">{{c.v}}</sc-if></div></sc-for></div></sc-for>
+<sc-if value="{{cu.churn.empty}}"><p class="note" style="padding: 24px 6px">当前筛选下没有流失预警客户。</p></sc-if>
+</div></div>
+<sc-if value="{{cu.churn.hasMore}}"><button type="button" class="more" onClick="{{cu.churn.onMore}}">{{cu.churn.moreTxt}}</button></sc-if>
+</div></sc-if>
+</div>
+</section>
+
+<section class="sec" id="sec-pr">
+<div class="sh"><h2>产品与库存</h2><p>{{pr.sum}}</p></div>
+<div class="stat"><sc-for list="{{pr.kpis}}" as="k" hint-placeholder-count="6"><div class="st"><span class="l">{{k.l}}</span><span class="kv">{{k.a}}<small>{{k.u}}</small></span><span class="d">{{k.d}}</span></div></sc-for></div>
+<div class="row r75">
+<section class="panel">
+<div class="ph"><h3>产品销售排名</h3><p>{{lbx.ytd}}，条的颜色代表品类，右侧为月均较{{lbx.prevHalf}}</p></div>
+<div class="lk"><sc-for list="{{pr.catLegend}}" as="g"><span class="key"><i style="{{g.sw}}"></i>{{g.n}} {{g.sh}}</span></sc-for></div>
+<div class="rank"><sc-for list="{{pr.prodBars}}" as="r" hint-placeholder-count="12"><div class="rk"><div class="nm"><b title="{{r.n}}">{{r.n}}</b><span>{{r.meta}}</span></div><div class="trk"><div class="b26" style="{{r.w}}"></div></div><div class="vv"><b>{{r.v}}</b><span class="{{r.dcls}}">{{r.d}}</span></div></div></sc-for></div>
+</section>
+<section class="panel">
+<div class="ph"><h3>各品类月均销售额</h3><p>颜色同左侧品类，时段长度不同，按月平均比较</p></div>
+<div class="cols" style="height: 230px"><sc-for list="{{pr.catCols}}" as="c" hint-placeholder-count="4"><div class="col"><span class="tt">{{c.total}}</span><div class="stack" style="{{c.delay}}; max-width: 64px"><sc-for list="{{c.segs}}" as="s"><div style="{{s.h}}" title="{{s.tip}}"></div></sc-for></div><span class="xl">{{c.per}}</span></div></sc-for></div>
+<div class="ph" style="border-top: 1px solid #e3e9e6; padding-top: 16px; margin-top: 6px"><h3>库存到期分布</h3><div class="lk"><span class="key"><i style="background: #c9372c"></i>已过期</span><span class="key"><i style="background: #e07b39"></i>180 天内</span><span class="key"><i style="background: #00907c"></i>更晚</span></div></div>
+<sc-if value="{{pr.hasExp}}"><div class="cols" style="height: 200px; gap: 4px; padding-top: 8px"><sc-for list="{{pr.exp}}" as="e" hint-placeholder-count="12"><div class="col"><div class="stack" style="max-width: 22px"><div style="{{e.h}}" title="{{e.tip}}"></div></div><span class="xl" style="font-size: 10px">{{e.t}}</span></div></sc-for></div></sc-if>
+<sc-if value="{{pr.noExp}}"><p class="note" style="padding: 24px 0">所选主体没有在库批次。</p></sc-if>
+<p class="note">按批次到期月份汇总的库存数量，悬停看数量。</p>
+</section>
+</div>
+<section class="panel">
+<div class="ph"><h3>库存够卖多久</h3><div class="lk"><span class="key"><i style="background: #00907c"></i>2–24 个月</span><span class="key"><i style="background: #c98c00"></i>超过 24 个月</span><span class="key"><i style="background: #e5663a"></i>不足 2 个月</span></div></div>
+<sc-if value="{{pr.hasCover}}"><div>
+<div class="rk" style="border: 0; padding: 0"><span></span><div class="bulscale"><span>0</span><span>2 个月</span><span>12</span><span>24 个月</span><span>36+</span></div><span></span></div>
+<div class="rank"><sc-for list="{{pr.cover}}" as="r" hint-placeholder-count="12"><div class="rk"><div class="nm"><b title="{{r.n}}">{{r.n}}</b><span>库存 {{r.v}}</span></div><div class="cvr"><i style="{{r.w}}"></i><span class="t2"></span><span class="t24"></span></div><div class="vv"><b>{{r.cv}}</b><span class="chip {{r.nchip}}">{{r.near}}</span></div></div></sc-for></div>
+</div></sc-if>
+<sc-if value="{{pr.noCover}}"><p class="note" style="padding: 24px 0">所选主体没有在库库存。</p></sc-if>
+<p class="note">按货值排序的前 12 个产品；可售月数 = 全部库存 ÷ {{lbx.cy}} 年月均销量，货值按 {{lbx.cy}} 年平均含税售价估算。</p>
+</section>
+<div class="panel flat">
+<div class="fbar"><button type="button" class="tog" onClick="{{pr.tbl.onToggle}}">{{pr.tbl.toggleTxt}}<i></i></button><button type="button" class="tog" onClick="{{pr.itbl.onToggle}}">{{pr.itbl.toggleTxt}}<i></i></button></div>
+<sc-if value="{{pr.tbl.open}}" hint-placeholder-val="{{ false }}"><div class="drawer">
+<label class="lbl" for="pr-q">搜索<input id="pr-q" class="search" type="search" placeholder="产品名称或编码" value="{{pr.q}}" onChange="{{pr.onQ}}"></label>
+<div class="grid-t"><div style="min-width: 960px">
+<div class="tr hd" style="grid-template-columns: 120px minmax(220px,2.4fr) 90px 110px 120px 70px 96px 130px"><sc-for list="{{pr.tbl.head}}" as="h"><button type="button" class="th {{h.cls}}" onClick="{{h.onSort}}">{{h.t}} {{h.arrow}}</button></sc-for></div>
+<sc-for list="{{pr.tbl.rows}}" as="r"><div class="tr" style="grid-template-columns: 120px minmax(220px,2.4fr) 90px 110px 120px 70px 96px 130px"><sc-for list="{{r.cells}}" as="c"><div class="td {{c.cls}}"><sc-if value="{{c.chip}}"><span class="chip {{c.chipCls}}">{{c.v}}</span></sc-if><sc-if value="{{c.plain}}">{{c.v}}</sc-if></div></sc-for></div></sc-for>
+</div></div>
+<sc-if value="{{pr.tbl.hasMore}}"><button type="button" class="more" onClick="{{pr.tbl.onMore}}">{{pr.tbl.moreTxt}}</button></sc-if>
+</div></sc-if>
+<sc-if value="{{pr.itbl.open}}" hint-placeholder-val="{{ false }}"><div class="drawer">
+<div class="grid-t"><div style="min-width: 1160px">
+<div class="tr hd" style="grid-template-columns: minmax(200px,2fr) minmax(140px,1.4fr) 90px 100px 100px 80px 92px 80px 100px 80px"><sc-for list="{{pr.itbl.head}}" as="h"><button type="button" class="th {{h.cls}}" onClick="{{h.onSort}}">{{h.t}} {{h.arrow}}</button></sc-for></div>
+<sc-for list="{{pr.itbl.rows}}" as="r"><div class="tr" style="grid-template-columns: minmax(200px,2fr) minmax(140px,1.4fr) 90px 100px 100px 80px 92px 80px 100px 80px"><sc-for list="{{r.cells}}" as="c"><div class="td {{c.cls}}"><sc-if value="{{c.chip}}"><span class="chip {{c.chipCls}}">{{c.v}}</span></sc-if><sc-if value="{{c.plain}}">{{c.v}}</sc-if></div></sc-for></div></sc-for>
+<sc-if value="{{pr.itbl.empty}}"><p class="note" style="padding: 24px 6px">所选主体没有在库批次。</p></sc-if>
+</div></div>
+<sc-if value="{{pr.itbl.hasMore}}"><button type="button" class="more" onClick="{{pr.itbl.onMore}}">{{pr.itbl.moreTxt}}</button></sc-if>
+</div></sc-if>
+</div>
+</section>
+
+<section class="sec foot" id="sec-df">
+<div class="sh"><h2>口径说明</h2><p>指标定义、剔除规则和与金蝶报表的核对结果</p></div>
+<button type="button" class="tog" onClick="{{df.onToggle}}">{{df.toggleTxt}}<i></i></button>
+<sc-if value="{{df.open}}" hint-placeholder-val="{{ false }}"><div class="drawer defs">
+<section class="panel">
+<div class="ph"><h3>指标口径</h3></div>
+<div class="dl">
+<span class="k">净销售</span><span>已审核销售出库单价税合计减去已审核销售退货单价税合计，按单据日期归月。</span>
+<span class="k">回款</span><span>金蝶应收账款汇总表按月的收销售款，包含收款单与出库单同单收款。</span>
+<span class="k">应收余额</span><span>应收账款汇总表期末余额，含销售应收与其他应收。</span>
+<span class="k">账龄</span><span>从出库日起算；客户的收款和退货按先进先出冲销最早的出库单。</span>
+<span class="k">到期日</span><span>出库日加客户档案的结算期限。"5 号前的业务在每月 20 号结算"按 5 日前出库当月 20 日、之后出库次月 20 日到期。没有设置结算期限的按出库即到期。</span>
+<span class="k">应收周转</span><span>期末应收 ÷ 近 3 个月净销售 × 92 天。</span>
+<span class="k">渠道</span><span>金蝶客户分类。同一客户在不同账套分类不同时，销售按各账套分类计，客户主渠道取销售额最大的分类。</span>
+<span class="k">客户</span><span>各账套按客户名称合并为集团口径。新客户指首笔出库在当年，数据从 2024 年 1 月起。</span>
+</div>
+</section>
+<section class="panel">
+<div class="ph"><h3>剔除规则</h3></div>
+<ul class="ul"><li>集团内部公司：{{df.rule1}}</li><li>客户名称包含：{{df.rule2}}</li><li>客户分类：{{df.rule3}}</li><li>命中任一规则的客户，其销售、回款、应收和预收都不计入。金蝶里的原始数据没有修改。</li></ul>
+<div class="mini" style="grid-template-columns: 1fr 1.4fr 60px 1fr"><div class="note">账套</div><div class="note">规则</div><div class="note">年份</div><div class="note r">剔除净额（元）</div><sc-for list="{{df.exRows}}" as="x"><div>{{x.l}}</div><div>{{x.r}}</div><div>{{x.y}}</div><div class="r">{{x.v}}</div></sc-for></div>
+</section>
+<section class="panel">
+<div class="ph"><h3>数据校验</h3></div>
+<p class="note">逐客户先进先出算出的账龄明细，与金蝶应收账款汇总表余额核对：</p>
+<div class="mini" style="grid-template-columns: 1fr 1fr 1fr 60px"><div class="note">账套</div><div class="note r">账龄明细合计</div><div class="note r">应收余额表</div><div class="note">结果</div><sc-for list="{{df.recon}}" as="x"><div>{{x.l}}</div><div class="r">{{x.a}}</div><div class="r">{{x.b}}</div><div><span class="chip ok">{{x.ok}}</span></div></sc-for></div>
+<p class="note">{{lbx.ytd}}净销售（出库减退货）与金蝶销售汇总表核对：</p>
+<div class="mini" style="grid-template-columns: 1fr 1fr 1fr 60px"><div class="note">账套</div><div class="note r">出库减退货</div><div class="note r">销售汇总表</div><div class="note">结果</div><sc-for list="{{df.recon2}}" as="x"><div>{{x.l}}</div><div class="r">{{x.a}}</div><div class="r">{{x.b}}</div><div><span class="chip ok">{{x.ok}}</span></div></sc-for></div>
+</section>
+<section class="panel">
+<div class="ph"><h3>数据来源与刷新</h3></div>
+<ul class="ul"><li>来源：金蝶云星辰开放平台，各账套只读拉取，拉取时间 {{df.pulled}}（UTC）。</li><li>数据截至 {{asOf}}，当天仍在录入的单据可能没有包含。</li><li>货值是按当年平均含税售价的估算，不是成本。</li><li>客户列表接口默认不返回已禁用客户，拉数脚本会自动补齐有历史单据的禁用客户。</li><li>需要更新数据时，重新拉取金蝶数据后重新生成页面。</li></ul>
+</section>
+</div></sc-if>
+</section>
+
+</sc-if>
+</main>
+</div>
+</x-dc>
+
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":6400}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { data: null, err: null, led: 'all', t: 1, hover: null, arRg: '', arF: 'all', arQ: '', cuQ: '', cuCh: '', prQ: '',
+      sort: { rep: ['s26', -1], ar: ['od', -1], cu: ['s26', -1], churn: ['t12', -1], pr: ['a', -1], inv: ['left', 1] }, more: {}, open: {} };
+  }
+  componentDidMount() {
+    fetch('__DATA_URL__').then(r => r.json())
+      .then(d => { this.setState({ data: d }); this.countUp(); })
+      .catch(e => this.setState({ err: '数据没有加载成功（' + e + '）' }));
+  }
+  componentWillUnmount() { this.dead = true; if (this.raf) cancelAnimationFrame(this.raf); }
+  countUp() {
+    const reduce = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reduce || typeof requestAnimationFrame !== 'function') { this.setState({ t: 1 }); return; }
+    if (this.raf) cancelAnimationFrame(this.raf);
+    const t0 = performance.now();
+    const step = now => { if (this.dead) return; const t = Math.min(1, (now - t0) / 1100); this.setState({ t }); if (t < 1) this.raf = requestAnimationFrame(step); };
+    this.setState({ t: 0 }); this.raf = requestAnimationFrame(step);
+  }
+
+  /* 格式 */
+  n0(v) { return Math.round(v).toLocaleString('zh-CN'); }
+  n1(v) { return (Math.round(v * 10) / 10).toLocaleString('zh-CN', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); }
+  big(v) { const a = Math.abs(v); if (a >= 1e8) return { a: (v / 1e8).toFixed(2), u: '亿' }; if (a >= 1e4) return { a: this.n1(v / 1e4), u: '万' }; return { a: this.n0(v), u: '元' }; }
+  bigT(v) { const b = this.big(v); return b.a + ' ' + b.u; }
+  pct(v, d) { return (v == null || !isFinite(v)) ? '—' : (v * 100).toFixed(d == null ? 1 : d) + '%'; }
+  wan(v) { return this.n0(v / 1e4); }
+  sgn(v) { return (v == null || !isFinite(v)) ? '' : (v >= 0 ? '+' : '−') + (Math.abs(v) * 100).toFixed(1) + '%'; }
+  dcls(v) { return v == null || !isFinite(v) ? '' : v >= 0 ? 'up' : 'down'; }
+  niceMax(v) { if (v <= 0) return 1; const p = Math.pow(10, Math.floor(Math.log10(v))); const f = v / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 2.5 ? 2.5 : f <= 5 ? 5 : 10) * p; }
+  ease(t) { return 1 - Math.pow(1 - t, 3); }
+  w(v, max) { return 'width:' + Math.max(0, Math.min(100, v / (max || 1) * 100)).toFixed(2) + '%'; }
+  h(v, max) { return 'height:' + Math.max(0, Math.min(100, v / (max || 1) * 100)).toFixed(2) + '%'; }
+  spark(arr, W, H) { const mx = Math.max(1, ...arr), mn = Math.min(0, ...arr); return arr.map((v, i) => (2 + i * (W - 4) / Math.max(1, arr.length - 1)).toFixed(1) + ',' + (H - 3 - (v - mn) / (mx - mn || 1) * (H - 6)).toFixed(1)).join(' '); }
+  toggle(k) { return () => this.setState({ open: Object.assign({}, this.state.open, { [k]: !this.state.open[k] }) }); }
+
+  /* 通用表格 */
+  table(id, cols, rows, limit, label) {
+    const lab = label || '明细';
+    const s = this.state.sort[id] || [cols[0].k, -1]; const k = s[0], dir = s[1];
+    const rs = rows.slice().sort((a, b) => { const x = a[k], y = b[k]; if (x == null && y == null) return 0; if (x == null) return 1; if (y == null) return -1;
+      return (typeof x === 'string' ? x.localeCompare(y, 'zh') : x - y) * dir; });
+    const all = !!this.state.more[id]; const lim = limit || 30; const shown = all ? rs : rs.slice(0, lim);
+    return {
+      open: !!this.state.open[id], onToggle: this.toggle(id), toggleTxt: this.state.open[id] ? '收起' + lab : '展开' + lab + '（' + rows.length + ' 条）',
+      head: cols.map(c => ({ t: c.t, cls: (c.num ? 'num ' : '') + (c.k === k ? 'on' : ''), arrow: c.k === k ? (dir < 0 ? '↓' : '↑') : '',
+        onSort: () => this.setState({ sort: Object.assign({}, this.state.sort, { [id]: [c.k, c.k === k ? -dir : (c.num ? -1 : 1)] }) }) })),
+      rows: shown.map(r => ({ cells: cols.map(c => { const v = r[c.k]; const f = c.f ? c.f(v, r) : { v: v == null ? '—' : String(v) };
+        return { v: f.v, cls: (c.num ? 'num ' : '') + (c.cls || '') + ' ' + (f.cls || ''), chip: !!f.chip, plain: !f.chip, chipCls: f.chip || '' }; }) })),
+      empty: rows.length === 0, hasMore: rows.length > lim, moreTxt: all ? '只看前 ' + lim + ' 条' : '显示全部 ' + rows.length + ' 条',
+      onMore: () => this.setState({ more: Object.assign({}, this.state.more, { [id]: !all }) })
+    };
+  }
+  fy(v) { return { v: v == null ? '—' : this.n0(v) }; }
+  fp(v) { return { v: this.sgn(v) || '—', cls: this.dcls(v) }; }
+
+  /* 页首 */
+  hero(V) {
+    const o = V.ov, e = this.ease(this.state.t);
+    const b = this.big(o.s26 * e);
+    const W = 560, H = 170, max = Math.max(1, ...o.trend[2].filter(x => x != null), ...o.trend[1].filter(x => x != null));
+    const pts = arr => arr.map((v, i) => v == null ? null : (8 + i * (W - 16) / 11).toFixed(1) + ',' + (H - 8 - (v / max) * (H - 20)).toFixed(1)).filter(Boolean).join(' ');
+    const last = o.trend[2].filter(x => x != null).length - 1;
+    const odSum = V.ar.reduce((s, r) => s + r.od, 0), posSum = V.ar.reduce((s, r) => s + r.pos, 0);
+    const collRate = o.c26 / ((o.ar0 + o.s26) || 1), odRate = posSum ? odSum / posSum : 0;
+    const C = 138.2;
+    const ring = p => 'stroke-dasharray:' + (Math.max(0, Math.min(1, p)) * C * e).toFixed(1) + ' ' + C;
+    const c = this.big(o.c26 * e), a = this.big(o.ar * e);
+    const dso = o.q3 > 0 ? o.ar / o.q3 * this.lb.dsoDays : null;
+    const kind = (x) => Object.assign({ isRing: false, isSpark: false, isBars: false, isGauge: false }, x);
+    const bt = V.ov.balTrend.slice(-13);
+    return {
+      a: b.a, u: b.u === '亿' ? '亿元' : b.u === '万' ? '万元' : '元', prev: this.bigT(o.s25),
+      cmp: o.s25 ? '比去年同期' + (o.s26 >= o.s25 ? '增长 ' : '减少 ') + (Math.abs(o.s26 / o.s25 - 1) * 100).toFixed(1) + '%' : '去年同期没有销售', cmpCls: o.s26 >= o.s25 ? 'good' : 'bad',
+      spark26: pts(o.trend[2]), spark25: pts(o.trend[1]), endT: this.lb.cm + ' 月 ' + this.wan(o.trend[2][last] || 0) + ' 万',
+      sx: (8 + last * (W - 16) / 11).toFixed(1), sy: (H - 8 - ((o.trend[2][last] || 0) / max) * (H - 20)).toFixed(1),
+      kpis: [
+        kind({ l: '回款', v: c.a, u: c.u, d: '去年同期 ' + this.bigT(o.c25), isBars: true, b1: this.w(o.c26, Math.max(o.c26, o.s26)), b2: this.w(o.s26, Math.max(o.c26, o.s26)), b1l: '回款', b2l: '净销售' }),
+        kind({ l: '回款率', v: this.pct(collRate * e), u: '', d: '回款 ÷（年初应收 + 净销售）', isRing: true, ring: ring(collRate), rcls: 'rg-jade' }),
+        kind({ l: this.lb.monthEnd + '应收', v: a.a, u: a.u, d: '年初 ' + this.bigT(o.ar0), isSpark: true, sp: this.spark(bt, 120, 34) }),
+        kind({ l: '逾期率', v: this.pct(odRate * e), u: '', d: '逾期 ' + this.bigT(odSum), isRing: true, ring: ring(odRate), rcls: 'rg-coral' }),
+        kind({ l: '应收周转', v: dso == null ? '—' : this.n1(dso * e), u: '天', d: this.lb.monthEnd + '应收 ÷ ' + this.lb.last3 + '净销售 × ' + this.lb.dsoDays, isGauge: true, g: 'left:' + Math.min(100, (dso || 0) / 120 * 100).toFixed(1) + '%' }),
+        kind({ l: '成交客户', v: this.n0(o.n26 * e), u: '家', d: '去年同期 ' + o.n25 + ' 家', isBars: true, b1: this.w(o.n26, Math.max(o.n26, o.n25)), b2: this.w(o.n25, Math.max(o.n26, o.n25)), b1l: this.lb.y[2], b2l: this.lb.y[1] })
+      ]
+    };
+  }
+
+  /* 经营总览 */
+  ov(V, d) {
+    const o = V.ov, T = this;
+    // 热力条
+    const hm = Math.max(1, ...[0, 1, 2].flatMap(j => o.trend[j].filter(x => x != null)));
+    const heat = [0, 1, 2].map(j => ({ y: this.lb.y[j], cells: o.trend[j].map((v, i) => { const y = this.lb.y[j]; const f = v == null ? 0 : Math.max(0, v) / hm;
+      return { v: v == null ? '' : this.wan(v), st: v == null ? 'background:transparent;border:1px dashed #d8e0dc' : 'background:rgba(0,144,124,' + (0.08 + f * 0.9).toFixed(3) + ');color:' + (f > 0.45 ? '#fff' : '#12211e') + ';animation-delay:' + (i * 25) + 'ms',
+        tip: y + ' 年 ' + (i + 1) + ' 月：' + (v == null ? '尚无数据' : this.wan(v) + ' 万') }; }), tot: this.wan(o.trend[j].reduce((s, v) => s + (v || 0), 0)) + ' 万' }));
+    // 三年折线
+    const all = [].concat(o.trend[0], o.trend[1], o.trend[2]).filter(x => x != null);
+    const ymax = this.niceMax(Math.max(...all, 1)); const X0 = 56, X1 = 984, Y0 = 20, Y1 = 262;
+    const xs = i => X0 + i * (X1 - X0) / 11, ys = v => Y1 - v / ymax * (Y1 - Y0);
+    const line = arr => arr.map((v, i) => v == null ? null : xs(i).toFixed(1) + ',' + ys(v).toFixed(1)).filter(Boolean).join(' ');
+    const ticks = [0, .25, .5, .75, 1].map(f => ({ st: 'top:' + (ys(ymax * f) / 280 * 100).toFixed(2) + '%', t: this.wan(ymax * f) }));
+    const hv = this.state.hover;
+    const cols = Array.from({ length: 12 }, (_, i) => ({ m: (i + 1) + '月', st: 'left:' + ((xs(i) - (X1 - X0) / 22) / 10).toFixed(2) + '%;width:' + ((X1 - X0) / 11 / 10).toFixed(2) + '%', lx: 'left:' + (xs(i) / 10).toFixed(2) + '%', on: hv === i ? 'on' : '', onEnter: () => this.setState({ hover: i }) }));
+    const tip = hv == null ? { m: '', st: '', rows: [] } : { m: (hv + 1) + '月', st: hv > 7 ? 'right:' + (100 - xs(hv) / 10 + 1.5).toFixed(2) + '%' : 'left:' + (xs(hv) / 10 + 1.5).toFixed(2) + '%',
+      rows: [[this.lb.y[2], o.trend[2][hv], 'k26'], [this.lb.y[1], o.trend[1][hv], 'k25'], [this.lb.y[0], o.trend[0][hv], 'k24']].map(r => ({ y: r[0] + ' 年', v: r[1] == null ? '—' : this.wan(r[1]) + ' 万', k: 'key ' + r[2] })) };
+    const l26 = o.trend[2].filter(x => x != null).length - 1;
+    // 主体
+    const ly = d.ledgerYears; const tot = [0, 1, 2].map(j => ly.reduce((s, x) => s + x.y[j], 0)); const lmax = this.niceMax(Math.max(...tot));
+    const LC = ['#00907c', '#e5663a', '#3b6fd9', '#c98c00'];
+    const ledCols = this.lb.yCol.map((y, j) => ({ y, total: this.wan(tot[j]) + ' 万', delay: 'animation-delay:' + (j * 120) + 'ms',
+      segs: ly.map((x, i) => ({ h: this.h(x.y[j], lmax) + ';background:' + LC[i] + ';opacity:' + (this.state.led === 'all' || this.state.led === x.n ? 1 : .22), tip: x.n + '，' + y + '：' + this.wan(x.y[j]) + ' 万' })) }));
+    const ledLegend = ly.map((x, i) => ({ n: x.n, sw: 'background:' + LC[i] }));
+    // 2026 月度
+    const mmax = this.niceMax(Math.max(1, ...o.m26.map(x => Math.max(x.s, x.c))));
+    const m26 = o.m26.map((x, i) => ({ m: x.m, hs: this.h(x.s, mmax), hc: this.h(x.c, mmax), tip: x.m + ' 净销售 ' + this.wan(x.s) + ' 万，回款 ' + this.wan(x.c) + ' 万', delay: 'animation-delay:' + (i * 50) + 'ms' }));
+    const mTicks = [1, .75, .5, .25, 0].map(f => ({ t: this.wan(mmax * f) }));
+    // 渠道 100% 条
+    const chPos = o.channels.filter(c => c.v26 > 0); const chTot = chPos.reduce((s, c) => s + c.v26, 0) || 1;
+    const CHC = ['#00907c', '#3b6fd9', '#e5663a', '#c98c00'];
+    const chSegs = chPos.map((c, i) => ({ n: c.n, st: 'flex-grow:' + (c.v26 / chTot * 1000).toFixed(0) + ';background:' + CHC[i % 4] + ';animation-delay:' + (i * 90) + 'ms', sh: this.pct(c.v26 / chTot, 0), big: c.v26 / chTot > 0.1, tip: c.n + '：' + this.wan(c.v26) + ' 万，占 ' + this.pct(c.v26 / chTot) }));
+    const chRows = o.channels.map((c, i) => { const pi = chPos.indexOf(c); return { n: c.n, sw: 'background:' + (pi >= 0 ? CHC[pi % 4] : '#bcc6c2'), v: this.wan(c.v26) + ' 万', sh: c.v26 > 0 ? this.pct(c.v26 / chTot) : '—', d: this.sgn(c.v25 > 0 ? c.v26 / c.v25 - 1 : null), dcls: c.v25 > 0 ? (c.v26 >= c.v25 ? 'up' : 'down') : '' }; });
+    // 大区方块图
+    const rg = {}; o.teams.forEach(t => { if (t.v26 > 0) { const r = rg[t.rg] = rg[t.rg] || { n: t.rg, v: 0, v25: 0, teams: [] }; r.v += t.v26; r.v25 += Math.max(0, t.v25); r.teams.push(t); } });
+    const rgs = Object.values(rg).sort((a, b) => b.v - a.v); const rgTot = rgs.reduce((s, r) => s + r.v, 0) || 1;
+    const TM = ['#00907c', '#1f9e8a', '#3aa994', '#4f8f84', '#5e7f79', '#6f8b86', '#7d9993', '#8aa39e'];
+    const tree = rgs.map((r, i) => ({ n: r.n, v: this.wan(r.v) + ' 万', sh: this.pct(r.v / rgTot), d: this.sgn(r.v25 > 0 ? r.v / r.v25 - 1 : null), dcls: this.dcls(r.v25 > 0 ? r.v / r.v25 - 1 : null),
+      st: 'flex-grow:' + (r.v / rgTot * 1000).toFixed(0) + ';animation-delay:' + (i * 70) + 'ms', showTeams: r.teams.length > 1,
+      teams: r.teams.sort((a, b) => b.v26 - a.v26).map(t => ({ n: t.n.split('·').pop(), v: this.wan(t.v26), st: 'flex-grow:' + (t.v26 / r.v * 1000).toFixed(0) + ';background:' + TM[i % 8], lbl: t.v26 / rgTot > 0.025, tip: t.n.split('·').pop() + '：' + this.wan(t.v26) + ' 万' })) }));
+    const topRg = rgs[0];
+    // 业务员前十
+    const reps = o.reps.slice(0, 10); const rmax = Math.max(1, ...reps.map(r => Math.max(r.s26, r.s25)));
+    const repBars = reps.map((r, i) => ({ n: r.rep, tm: String(r.team).split('·').pop(), v: this.wan(r.s26) + ' 万', w26: this.w(r.s26, rmax) + ';animation-delay:' + (i * 50) + 'ms', w25: this.w(r.s25, rmax), d: this.sgn(r.yoy), dcls: this.dcls(r.yoy) }));
+    const rep = this.table('rep', [
+      { k: 'rep', t: '业务员', cls: 'strong' }, { k: 'team', t: '主要部门', f: v => ({ v: String(v).split('·').pop() }) }, { k: 's26', t: this.lb.ytd, num: 1, f: v => T.fy(v) }, { k: 'sh', t: '占比', num: 1, f: v => ({ v: T.pct(v) }) },
+      { k: 's25', t: this.lb.py, num: 1, f: v => T.fy(v) }, { k: 'yoy', t: '同比', num: 1, f: v => T.fp(v) }, { k: 'n', t: '成交客户', num: 1, f: v => ({ v: String(v) }) }], o.reps, 25, '业务员明细');
+    const topCh = chPos[0];
+    return { heat, l24: line(o.trend[0]), l25: line(o.trend[1]), l26: line(o.trend[2]), ticks, cols, tip, hasTip: hv != null,
+      endX: xs(l26).toFixed(1), endY: ys(o.trend[2][l26] || 0).toFixed(1), endT: this.wan(o.trend[2][l26] || 0) + ' 万',
+      endLbl: 'left:' + (xs(l26) / 10).toFixed(2) + '%;top:' + (ys(o.trend[2][l26] || 0) / 280 * 100).toFixed(2) + '%',
+      ledCols, ledLegend, m26, mTicks, chSegs, chRows, tree, repBars, rep,
+      sum: (topCh ? topCh.n + '是最大渠道，占 ' + this.pct(topCh.v26 / chTot) + '；' : '') + (topRg ? topRg.n + '贡献最多，' + this.wan(topRg.v) + ' 万元。' : '') };
+  }
+
+  /* 应收与账龄 */
+  ar(V, d) {
+    const T = this, s = this.state;
+    const regions = [...new Set(V.ar.map(r => r.rg))].sort((a, b) => a.localeCompare(b, 'zh'));
+    const rg = regions.includes(s.arRg) ? s.arRg : '';
+    const base = V.ar.filter(r => !rg || r.rg === rg);
+    const sum = (arr, k) => arr.reduce((t, r) => t + r[k], 0);
+    const pos = sum(base, 'pos'), od = sum(base, 'od'), o180 = sum(base, 'o180'), due30 = sum(base, 'due30'), neg = sum(base, 'neg');
+    const overN = base.filter(r => r.over).length;
+    const k = (l, v, dd, cls) => { const b = this.big(v); return { l, a: b.a, u: b.u, d: dd, cls: cls || '' }; };
+    const kpis = [k('欠款合计', pos, base.filter(r => r.pos > 0).length + ' 家客户'), k('逾期金额', od, '逾期率 ' + this.pct(pos ? od / pos : 0), 'alert'),
+      k('账龄超 180 天', o180, '占 ' + this.pct(pos ? o180 / pos : 0)), k('未来 30 天到期', due30, '可提前催收'),
+      { l: '超信用额度', a: String(overN), u: '家', d: '额度 ≤1 元视为未设', cls: '' }, k('贷方余额', -neg, '多收或预收')];
+    const mx = Array(30).fill(0); base.forEach(r => r.mx.forEach((v, i) => mx[i] += v)); const mmax = Math.max(1, ...mx);
+    const AG = ['0–30 天', '31–60 天', '61–90 天', '91–180 天', '181–365 天', '365 天以上'], OD = ['未到期', '逾期 1–30', '31–90', '91–180', '180 天以上'];
+    const matrix = AG.map((a, i) => ({ a, tot: this.n1(mx.slice(i * 5, i * 5 + 5).reduce((x, y) => x + y, 0) / 1e4),
+      cells: OD.map((o, j) => { const v = mx[i * 5 + j]; const f = v / mmax; const hue = j === 0 ? '0,144,124' : '229,102,58';
+        return { v: v > 0 ? this.n1(v / 1e4) : '·', st: 'background:rgba(' + hue + ',' + (v > 0 ? (0.08 + f * 0.82).toFixed(3) : 0) + ');color:' + (f > 0.5 ? '#fff' : v > 0 ? '#12211e' : '#a3aeab') + ';animation-delay:' + ((i * 5 + j) * 18) + 'ms', tip: a + '，' + o + '：' + this.n0(v) + ' 元' }; }) }));
+    const colTot = OD.map((o, j) => ({ v: this.n1(AG.reduce((t, a, i) => t + mx[i * 5 + j], 0) / 1e4) }));
+    // 账龄结构条
+    const AGC = ['#7fcdbb', '#3fae98', '#e8b27a', '#e5663a', '#c9372c', '#7d1d16'];
+    const ageTot = AG.map((a, i) => mx.slice(i * 5, i * 5 + 5).reduce((x, y) => x + y, 0));
+    const ageSegs = AG.map((a, i) => ({ n: a, st: 'flex-grow:' + (ageTot[i] / (pos || 1) * 1000).toFixed(0) + ';background:' + AGC[i] + ';animation-delay:' + (i * 80) + 'ms', sh: this.pct(ageTot[i] / (pos || 1), 0), big: ageTot[i] / (pos || 1) > 0.07, lt: i < 3 ? 'lt' : '', tip: a + '：' + this.n1(ageTot[i] / 1e4) + ' 万' })).filter((x, i) => ageTot[i] > 0);
+    const ageLegend = AG.map((a, i) => ({ n: a, sw: 'background:' + AGC[i], v: this.n1(ageTot[i] / 1e4) + ' 万' }));
+    // 逾期客户前十
+    const topOd = base.filter(r => r.od > 0).sort((a, b) => b.od - a.od).slice(0, 10); const omax = Math.max(1, ...topOd.map(r => r.od));
+    const odBars = topOd.map((r, i) => ({ n: r.n, meta: r.rep + '，' + r.tm + '，账期 ' + r.term, v: this.n1(r.od / 1e4) + ' 万', days: '最长 ' + r.maxod + ' 天', dchip: r.maxod > 180 ? 'crit' : r.maxod > 90 ? 'ser' : 'warn',
+      w: this.w(r.od, omax) + ';animation-delay:' + (i * 55) + 'ms', wb: this.w(r.pos, omax) }));
+    // 应收趋势
+    const bt = V.ov.balTrend, bmax = this.niceMax(Math.max(1, ...bt)); const X0 = 48, X1 = 986, Y0 = 16, Y1 = 196;
+    const bx = i => X0 + i * (X1 - X0) / (bt.length - 1), by = v => Y1 - v / bmax * (Y1 - Y0);
+    const bl = bt.map((v, i) => bx(i).toFixed(1) + ',' + by(v).toFixed(1)).join(' ');
+    const barea = bl + ' ' + X1 + ',' + Y1 + ' ' + X0 + ',' + Y1;
+    const bticks = [0, .5, 1].map(f => ({ st: 'top:' + (by(bmax * f) / 210 * 100).toFixed(2) + '%', t: this.wan(bmax * f) }));
+    const bmarks = d.months.map((m, i) => ({ m, i })).filter(x => x.m.endsWith('-01')).map(x => ({ st: 'left:' + (bx(x.i) / 10).toFixed(2) + '%', t: x.m.slice(0, 4) + ' 年' }));
+    // 部门
+    const byRg = {}; V.ar.forEach(r => { if (r.od > 0) byRg[r.rg] = (byRg[r.rg] || 0) + r.od; }); const rgMax = Math.max(1, ...Object.values(byRg));
+    const rgBars = Object.keys(byRg).sort((a, b) => byRg[b] - byRg[a]).map((n, i) => ({ n, v: this.n1(byRg[n] / 1e4) + ' 万', on: !rg || rg === n ? '' : 'dim', pressed: rg === n ? 'true' : 'false',
+      w: this.w(byRg[n], rgMax) + ';animation-delay:' + (i * 60) + 'ms', pick: () => this.setState({ arRg: rg === n ? '' : n }) }));
+    // 到期
+    const wk = Array(12).fill(0); base.forEach(r => r.wk.forEach((v, i) => wk[i] += v)); const wmax = this.niceMax(Math.max(1, ...wk));
+    const asof = new Date(d.asOf + 'T00:00:00');
+    const weeks = wk.map((v, i) => { const dt = new Date(asof.getTime() + (1 + i * 7) * 864e5); const lb = (dt.getMonth() + 1) + '/' + dt.getDate();
+      return { t: lb, h: this.h(v, wmax) + ';animation-delay:' + (i * 40) + 'ms', v: v > 0 ? this.n1(v / 1e4) : '', tip: lb + ' 起一周到期：' + this.n0(v) + ' 元' }; });
+    const q = s.arQ.trim(), f = s.arF;
+    const rows = base.filter(r => (f === 'all' || (f === 'od' && r.od > 0) || (f === 'over' && r.over) || (f === 'noterm' && r.term === '未设置')) && (!q || r.n.includes(q) || r.rep.includes(q)));
+    const ST = { crit: ['crit', '严重逾期'], ser: ['ser', '逾期'], warn: ['warn', '超额度'], ok: ['ok', '正常'], cr: ['neutral', '贷方余额'] };
+    const tbl = this.table('ar', [
+      { k: 'n', t: '客户', cls: 'name' }, { k: 'st', t: '状态', f: v => ({ v: ST[v][1], chip: ST[v][0] }) }, { k: 'ch', t: '渠道' }, { k: 'rep', t: '业务员' }, { k: 'tm', t: '部门' },
+      { k: 'term', t: '账期' }, { k: 'lim', t: '信用额度', num: 1, f: v => ({ v: v == null ? '未设' : T.n0(v) }) }, { k: 'bal', t: '应收余额', num: 1, f: v => T.fy(v) },
+      { k: 'od', t: '逾期金额', num: 1, f: v => ({ v: v > 0 ? T.n0(v) : '—', cls: v > 0 ? 'down' : '' }) }, { k: 'maxod', t: '最长逾期', num: 1, f: v => ({ v: v == null ? '—' : v + ' 天' }) },
+      { k: 'first', t: '最早未清出库' }, { k: 'led', t: '账套' }], rows, 20, '客户应收明细');
+    const regionChips = [{ n: '全部部门', on: !rg ? 'on' : '', pressed: !rg ? 'true' : 'false', pick: () => this.setState({ arRg: '' }) }].concat(regions.map(n => ({ n, on: rg === n ? 'on' : '', pressed: rg === n ? 'true' : 'false', pick: () => this.setState({ arRg: n }) })));
+    const fChips = [['all', '全部'], ['od', '仅逾期'], ['over', '超额度'], ['noterm', '未设账期']].map(x => ({ n: x[1], on: f === x[0] ? 'on' : '', pressed: f === x[0] ? 'true' : 'false', pick: () => this.setState({ arF: x[0] }) }));
+    return { kpis, matrix, colTot, total: this.n1(pos / 1e4), heads: OD, ageSegs, ageLegend, odBars, hasOd: odBars.length > 0, noOd: odBars.length === 0, bl, barea, bticks, bmarks,
+      bEndX: bx(bt.length - 1).toFixed(1), bEndY: by(bt[bt.length - 1]).toFixed(1), bEndT: this.wan(bt[bt.length - 1]) + ' 万',
+      bEndSt: 'right:' + (100 - bx(bt.length - 1) / 10).toFixed(2) + '%;top:' + Math.max(0, by(bt[bt.length - 1]) / 210 * 100 - 16).toFixed(2) + '%',
+      rgBars, weeks, tbl, regionChips, fChips, rgNote: rg ? '正在看' + rg + '。月末余额趋势不受部门筛选影响。' : '点部门条形，整个应收模块会只看这个部门。',
+      onQ: e => this.setState({ arQ: e.target.value }), q: s.arQ,
+      sum: '欠款 ' + this.bigT(pos) + '，其中 ' + this.pct(pos ? od / pos : 0) + ' 已逾期' + (topOd[0] ? '；逾期最多的是' + topOd[0].n + '，' + this.n1(topOd[0].od / 1e4) + ' 万元。' : '。') };
+  }
+
+  /* 客户经营 */
+  cu(V) {
+    const c = V.cu, T = this, s = this.state; const tot = c.tot || 1;
+    const k = (l, a, u, dd) => ({ l, a, u, d: dd });
+    const kpis = [k(this.lb.cy + ' 年成交客户', String(c.n26), '家', '去年同期 ' + c.n25 + ' 家'), k('新客户', String(c.newN), '家', '贡献 ' + this.bigT(c.newS) + '，占 ' + this.pct(c.newS / tot)),
+      k('流失预警', String(c.churnN), '家', '近 12 个月净销售 ' + this.bigT(c.churnT12)), k('复购间隔中位数', c.medGap == null ? '—' : this.n0(c.medGap), '天', '成交 3 次以上的客户'),
+      k('前 10 大客户占比', this.pct(c.top10 / tot), '', '合计 ' + this.bigT(c.top10))];
+    const mmax = this.niceMax(Math.max(1, ...c.newM.map((v, i) => v + c.oldM[i])));
+    const newold = c.newM.map((v, i) => ({ m: (i + 1) + '月', ho: this.h(c.oldM[i], mmax), hn: this.h(v, mmax), delay: 'animation-delay:' + (i * 50) + 'ms', tip: (i + 1) + '月 老客户 ' + this.wan(c.oldM[i]) + ' 万，新客户 ' + this.wan(v) + ' 万' }));
+    const nTicks = [1, .5, 0].map(f => ({ t: this.wan(mmax * f) }));
+    const N = c.cum.length, X0 = 44, X1 = 986, Y0 = 14, Y1 = 196;
+    const px = i => X0 + (N > 1 ? i * (X1 - X0) / (N - 1) : 0), py = v => Y1 - v / 100 * (Y1 - Y0);
+    const pl = c.cum.map((v, i) => px(i).toFixed(1) + ',' + py(v).toFixed(1)).join(' ');
+    const pArea = N ? pl + ' ' + px(N - 1).toFixed(1) + ',' + Y1 + ' ' + X0 + ',' + Y1 : '';
+    const pMarks = [9, 19, 49].filter(i => i < N).map(i => ({ st: 'left:' + (px(i) / 10).toFixed(2) + '%;top:' + (py(c.cum[i]) / 210 * 100).toFixed(2) + '%', t: '前 ' + (i + 1) + ' 名 ' + c.cum[i] + '%' }));
+    const pTicks = [0, 50, 100].map(v => ({ st: 'top:' + (py(v) / 210 * 100).toFixed(2) + '%', t: v + '%' }));
+    const chans = [...new Set(c.rows.map(r => r.ch))]; const ch = chans.includes(s.cuCh) ? s.cuCh : '';
+    const chChips = [{ n: '全部渠道', on: !ch ? 'on' : '', pressed: !ch ? 'true' : 'false', pick: () => this.setState({ cuCh: '' }) }].concat(chans.map(n => ({ n, on: ch === n ? 'on' : '', pressed: ch === n ? 'true' : 'false', pick: () => this.setState({ cuCh: n }) })));
+    const rowsF = c.rows.filter(r => !ch || r.ch === ch);
+    const top = rowsF.filter(r => r.s26 > 0).slice(0, 10); const tmax = Math.max(1, ...top.map(r => Math.max(r.s26, r.s25)));
+    const topBars = top.map((r, i) => ({ n: r.n, meta: r.ch + '，' + r.rep + (r.new ? '，新客户' : ''), v: this.wan(r.s26) + ' 万', d: this.sgn(r.yoy), dcls: this.dcls(r.yoy),
+      w26: this.w(r.s26, tmax) + ';animation-delay:' + (i * 50) + 'ms', w25: this.w(r.s25, tmax), sp: this.spark(r.m, 110, 30) }));
+    const ch10 = c.churn.filter(r => !ch || r.ch === ch).slice(0, 8);
+    const bullet = ch10.map((r, i) => ({ n: r.n, meta: r.ch + '，' + r.rep + '，上次成交 ' + r.ld, v: this.wan(r.t12) + ' 万', since: r.since + ' 天未下单', gap: '平时每 ' + this.n0(r.gap) + ' 天一单',
+      w: 'width:' + Math.min(100, r.since / 365 * 100).toFixed(1) + '%;animation-delay:' + (i * 60) + 'ms', mk: 'left:' + Math.min(100, r.gap / 365 * 100).toFixed(1) + '%', sev: r.ratio >= 4 ? 'crit' : r.ratio >= 2 ? 'ser' : 'warn' }));
+    const q = s.cuQ.trim();
+    const tbl = this.table('cu', [
+      { k: 'n', t: '客户', cls: 'name', f: (v, r) => ({ v: v + (r.new ? '（新客户）' : '') }) }, { k: 'ch', t: '渠道' }, { k: 'rep', t: '主要业务员' }, { k: 's26', t: this.lb.ytd, num: 1, f: v => T.fy(v) },
+      { k: 's25', t: this.lb.py, num: 1, f: v => T.fy(v) }, { k: 'yoy', t: '同比', num: 1, f: v => T.fp(v) }, { k: 'nb', t: '成交次数', num: 1, f: v => ({ v: v == null ? '—' : String(v) }) },
+      { k: 'ld', t: '最近成交' }, { k: 'gap', t: '复购间隔', num: 1, f: v => ({ v: v == null ? '—' : T.n0(v) + ' 天' }) }, { k: 'bal', t: '应收余额', num: 1, f: v => T.fy(v) },
+      { k: 'od', t: '逾期', num: 1, f: v => ({ v: v > 0 ? T.n0(v) : '—', cls: v > 0 ? 'down' : '' }) }], rowsF.filter(r => !q || r.n.includes(q)), 20, '客户明细');
+    const churn = this.table('churn', [
+      { k: 'n', t: '客户', cls: 'name' }, { k: 'ch', t: '渠道' }, { k: 'rep', t: '主要业务员' }, { k: 'ld', t: '最近成交' }, { k: 'since', t: '距今', num: 1, f: v => ({ v: v + ' 天' }) },
+      { k: 'gap', t: '平均间隔', num: 1, f: v => ({ v: T.n0(v) + ' 天' }) }, { k: 'ratio', t: '超出', num: 1, f: v => ({ v: T.n1(v) + ' 倍', chip: v >= 4 ? 'crit' : v >= 2 ? 'ser' : 'warn' }) },
+      { k: 't12', t: '近 12 个月净销售', num: 1, f: v => T.fy(v) }, { k: 'bal', t: '应收余额', num: 1, f: v => T.fy(v) }], c.churn.filter(r => !ch || r.ch === ch), 20, '流失预警明细');
+    return { kpis, newold, nTicks, pl, pArea, pMarks, pTicks, chChips, topBars, bullet, hasBullet: bullet.length > 0, tbl, churn, onQ: e => this.setState({ cuQ: e.target.value }), q: s.cuQ,
+      sum: c.n26 + ' 家客户在 ' + this.lb.cy + ' 年有成交，前 10 名占 ' + this.pct(c.top10 / tot) + '；' + c.churnN + ' 家进入流失预警。' };
+  }
+
+  /* 产品与库存 */
+  pr(V) {
+    const p = V.pr, T = this, s = this.state;
+    const CC = ['#00907c', '#e5663a', '#3b6fd9', '#c98c00'];
+    const catIdx = {}; p.cats.forEach((c, i) => catIdx[c.n] = i);
+    const PER = this.psPeriods;
+    const tots = PER.map((_, j) => p.cats.reduce((t, c) => t + c.m[j], 0)); const cmax = this.niceMax(Math.max(1, ...tots));
+    const catCols = PER.map((per, j) => ({ per, total: this.wan(tots[j]) + ' 万/月', delay: 'animation-delay:' + (j * 110) + 'ms',
+      segs: p.cats.map((c, i) => ({ h: this.h(Math.max(0, c.m[j]), cmax) + ';background:' + CC[i % 4], tip: c.n + '，' + per + '：月均 ' + this.wan(c.m[j]) + ' 万' })) }));
+    const catLegend = p.cats.map((c, i) => ({ n: c.n, sh: this.pct(c.sh), sw: 'background:' + CC[i % 4] }));
+    const topP = p.rows.slice(0, 12); const pmax = Math.max(1, ...topP.map(r => r.a));
+    const prodBars = topP.map((r, i) => ({ n: r.n, meta: r.cat + '，' + this.n0(r.q) + ' ' + r.unit + '，均价 ' + (r.avg == null ? '—' : this.n0(r.avg)), v: this.wan(r.a) + ' 万', sh: this.pct(r.sh), d: this.sgn(r.chg), dcls: this.dcls(r.chg),
+      w: this.w(r.a, pmax) + ';background:' + CC[(catIdx[r.cat] || 0) % 4] + ';animation-delay:' + (i * 45) + 'ms' }));
+    const ip = p.invProd.slice(0, 12);
+    const cover = ip.map((r, i) => { const cv = r.cover; const st = cv == null ? 'na' : cv > 24 ? 'over' : cv < 2 ? 'low' : 'ok';
+      return { n: r.n, v: r.q.toLocaleString('zh-CN') + '，货值 ' + this.wan(r.val) + ' 万', cv: cv == null ? '无 ' + this.lb.cy + ' 年销量' : this.n1(cv) + ' 个月', near: r.near == null ? '' : r.near < 0 ? '有已过期批次' : '最近 ' + r.near + ' 天到期',
+        nchip: r.near == null ? 'neutral' : r.near < 0 ? 'crit' : r.near <= 90 ? 'ser' : r.near <= 180 ? 'warn' : 'ok',
+        w: 'width:' + Math.min(100, (cv == null ? 36 : cv) / 36 * 100).toFixed(1) + '%;background:' + (st === 'over' ? '#c98c00' : st === 'low' ? '#e5663a' : st === 'na' ? '#bcc6c2' : '#00907c') + ';animation-delay:' + (i * 45) + 'ms' }; });
+    const emax = this.niceMax(Math.max(1, ...p.exp.map(x => x.q))); const ECOL = { crit: '#c9372c', near: '#e07b39', ok: '#00907c' };
+    const exp = p.exp.map((x, i) => ({ t: x.k === '已过期' ? '已过期' : x.k.slice(2).replace('-', '.'), h: this.h(x.q, emax) + ';background:' + ECOL[x.st] + ';animation-delay:' + (i * 35) + 'ms', tip: (x.k === '已过期' ? '已过期' : x.k + ' 到期') + '：' + this.n0(x.q) }));
+    const inv = p.inv; const near = inv.filter(r => r.st === 'ser' || r.st === 'warn'), expd = inv.filter(r => r.st === 'crit');
+    const val = inv.reduce((t, r) => t + (r.val || 0), 0), nearV = near.reduce((t, r) => t + (r.val || 0), 0);
+    const tb = this.big(p.total); const top = p.cats[0];
+    const kpis = [{ l: this.lb.ytd + '产品销售', a: tb.a, u: tb.u, d: '与净销售一致' }, { l: '在售产品', a: String(p.nProd), u: '个', d: this.lb.cy + ' 年有成交的编码' },
+      { l: '第一大品类', a: top ? top.n : '—', u: '', d: top ? '占 ' + this.pct(top.sh) : '' }, { l: '现存库存批次', a: String(inv.length), u: '批', d: inv.length ? '估算货值 ' + this.bigT(val) : '所选主体无库存' },
+      { l: '180 天内到期', a: String(near.length), u: '批', d: '估算货值 ' + this.bigT(nearV) }, { l: '已过期', a: String(expd.length), u: '批', d: '数量 ' + this.n0(expd.reduce((t, r) => t + r.q, 0)) }];
+    const q = s.prQ.trim();
+    const tbl = this.table('pr', [
+      { k: 'no', t: '编码' }, { k: 'n', t: '产品', cls: 'name' }, { k: 'cat', t: '品类' }, { k: 'q', t: '数量', num: 1, f: (v, r) => ({ v: T.n1(v) + ' ' + r.unit }) }, { k: 'a', t: '销售额', num: 1, f: v => T.fy(v) },
+      { k: 'sh', t: '占比', num: 1, f: v => ({ v: T.pct(v) }) }, { k: 'avg', t: '平均单价', num: 1, f: v => ({ v: v == null ? '—' : v.toFixed(2) }) }, { k: 'chg', t: '月均较' + this.lb.prevHalf, num: 1, f: v => T.fp(v) }],
+      p.rows.filter(r => !q || r.n.includes(q) || r.no.includes(q)), 20, '产品明细');
+    const IST = { crit: ['crit', '已过期'], ser: ['ser', '90 天内'], warn: ['warn', '180 天内'], ok: ['ok', '正常'], na: ['neutral', '无效期'] };
+    const itbl = this.table('inv', [
+      { k: 'n', t: '产品', cls: 'name' }, { k: 'model', t: '规格' }, { k: 'stock', t: '仓库' }, { k: 'batch', t: '批次' }, { k: 'valid', t: '到期日' },
+      { k: 'left', t: '剩余天数', num: 1, f: v => ({ v: v == null ? '—' : T.n0(v) }) }, { k: 'st', t: '效期', f: v => ({ v: IST[v][1], chip: IST[v][0] }) },
+      { k: 'q', t: '数量', num: 1, f: v => ({ v: T.n0(v) }) }, { k: 'val', t: '估算货值', num: 1, f: v => ({ v: v == null ? '无售价' : T.n0(v) }) }, { k: 'cover', t: '可售月数', num: 1, f: v => ({ v: v == null ? '—' : T.n1(v) }) }], inv, 20, '库存批次明细');
+    return { kpis, catCols, catLegend, prodBars, cover, hasCover: cover.length > 0, noCover: cover.length === 0, exp, hasExp: exp.length > 0, noExp: exp.length === 0, tbl, itbl, onQ: e => this.setState({ prQ: e.target.value }), q: s.prQ,
+      sum: (top ? top.n + '占产品销售的 ' + this.pct(top.sh) + '；' : '') + (p.rows[0] ? p.rows[0].n + '销售额最高，' + this.wan(p.rows[0].a) + ' 万元。' : '') };
+  }
+
+  df(d) {
+    const ck = d.checks || {}; const ex = ck['剔除金额'] || {};
+    const exRows = Object.keys(ex).map(k => { const a = k.split('|'); return { l: a[0], r: a[1], y: a[2], v: this.n0(ex[k]) }; });
+    const recon = Object.keys(ck).filter(k => k.indexOf('账龄明细') >= 0).map(k => ({ l: k.split(' ')[0], a: this.n0(ck[k][0]), b: this.n0(ck[k][1]), ok: Math.abs(ck[k][0] - ck[k][1]) < 0.01 ? '一致' : '不一致' }));
+    const s1 = ck['本年净销售（剔除后）'] || ck['2026年1-9月 净销售（剔除后）'] || {}, s2 = ck['本年销售汇总表合计（剔除后）'] || ck['2026年1-9月 销售汇总表合计（剔除后）'] || {};
+    const recon2 = Object.keys(s1).map(l => ({ l, a: this.n0(s1[l]), b: this.n0(s2[l] || 0), ok: Math.abs(s1[l] - (s2[l] || 0)) < 0.01 ? '一致' : '不一致' }));
+    const R = d.rules;
+    return { exRows, recon, recon2, rule1: R.name_exact.join('、'), rule2: R.name_contains.join('、'), rule3: R.customer_group.join('、'), pulled: d.pulledAt.replace('T', ' ').slice(0, 16),
+      open: !!this.state.open.df, onToggle: this.toggle('df'), toggleTxt: this.state.open.df ? '收起口径说明' : '查看口径、剔除规则与数据校验' };
+  }
+
+  renderVals() {
+    const s = this.state, d = s.data;
+    const ledNames = d ? ['all'].concat(d.ledgers) : ['all'];
+    const ledgers = ledNames.map(n => ({ n: n === 'all' ? '集团' : n, on: s.led === n ? 'on' : '', pressed: s.led === n ? 'true' : 'false',
+      pick: () => { if (s.led !== n) { this.setState({ led: n, hover: null, arRg: '' }); this.countUp(); } } }));
+    const out = { ledgers, ready: !!d, loading: !d && !s.err, err: s.err, hasErr: !!s.err, asOf: d ? d.asOf : '…',
+      ledLabel: s.led === 'all' ? '集团' : s.led, clearHover: () => this.setState({ hover: null }) };
+    if (!d) return out;
+    this.lb = d.lb; this.psPeriods = d.psPeriods;
+    const L = d.lb; out.lbx = { ytd: L.ytd, py: L.py, cy: L.cy, y0: L.y[0], y1: L.y[1], y2: L.y[2], prevHalf: L.prevHalf, cm: L.cm };
+    const asof = new Date(d.asOf + 'T00:00:00');
+    const soon = Object.keys(d.expires || {}).filter(k => (new Date(d.expires[k] + 'T00:00:00') - asof) / 864e5 <= 45).map(k => k + ' ' + d.expires[k]);
+    out.expWarn = soon.length ? '金蝶 API 授权即将到期：' + soon.join('，') + '。到期后这些账套的数据无法更新，请提前续费。' : ''; out.hasExp = soon.length > 0;
+    const V = d.v[s.led];
+    out.hero = this.hero(V); out.ov = this.ov(V, d); out.ar = this.ar(V, d); out.cu = this.cu(V); out.pr = this.pr(V); out.df = this.df(d);
+    return out;
+  }
+}
+
+</script>
+</body>
+</html>
